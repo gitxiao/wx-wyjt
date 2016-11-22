@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" href="../../css/app.css">
+		<style>
+			html,body {
+				background-color: #efeff4;
+			}
+			.about_text{
+				
+			}
+		</style>
+		
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/myUtils.js"></script>
+		<script src="../../js/myLogic.js"></script>
+		<script src="../../js/json2.js"></script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 id="title" class="mui-title">意见 / 建议</h1>
+		</header>
+		<div class="mui-content" style="margin-top: 20px;">
+			<h4 style="margin-left: 20px;">告诉春风家政您的意见和建议， 我们会尽快改进^ ^</h4>
+			
+			<textarea id="yijian" rows="5" placeholder="亲，请在此填写您的宝贵意见"></textarea>
+		
+			<button id="commit" type="button" class="button mui-btn mui-btn-blue mui-btn-block">提交宝贵意见</button>
+		</div>
+		
+		<script type="text/javascript" charset="utf-8">
+			 //mui初始化
+			mui.init();
+//			var oldBack = mui.back;
+//			mui.back = function() {
+//				oldBack();
+//			}
+			
+			var commitSuccess = function(response){
+				console.log("commitSuccess:" + response);
+				if(response && response.mobileNum){
+					mui.alert('感谢您的宝贵意见','提交成功',mui.back);
+				}else{
+					alert("感谢您的宝贵意见^ ^");
+				}
+			}
+			var commitError = function(xhr,type,errorThrown){
+				console.log("提交失败");
+				alert("网络错误,请稍后重试");
+			}
+			mui.plusReady(function() {
+				var self = plus.webview.currentWebview();
+				document.getElementById("commit").addEventListener("tap",function(){
+					if(self && self.mobileNum){
+						var yj = document.getElementById("yijian").value;
+						console.log(yj + "," + yj.length);
+						if(yj && yj.length >= 5){
+							var jsonData = JSON.stringify({mobileNum:self.mobileNum,suggest:yj});
+							operateDB('suggest/saveSuggest/',{jsonData:jsonData},commitSuccess,commitError);
+						}else{
+							alert("意见的长度不能少于5个字");
+						}
+					}else{
+						goLogin();
+					}
+				});
+			});
+		</script>
+	</body>
+</html>
+

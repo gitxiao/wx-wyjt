@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
+    <script src="../../js/mui.min.js"></script>
+    <script src="../../js/myLogic.js"></script>
+    <script src="../../js/myUtils.js"></script>
+    <script src="../../js/beecloud.js"></script>
+    
+    <link href="../../css/mui.min.css" rel="stylesheet"/>
+    <link href="../../css/app.css" rel="stylesheet"/>
+    <style>
+    	h5{
+	        padding-top: 8px;
+	        padding-bottom: 8px;
+	        text-indent: 12px;
+	    }
+    </style>
+    
+    <script type="text/javascript" charset="UTF-8">
+    	var payid = "WX_APP";
+      	mui.init();
+      	mui.plusReady(function() {
+      		var self = plus.webview.currentWebview();
+    	
+      		//注意， 这里必须在plusReady函数内调用，否则会报错没有找到id为button_pay的组件
+	      	document.getElementById("button_pay").addEventListener("tap",function(){
+				console.log("payid = " + payid);
+				beecloudPay(payid);
+			});
+      	
+      		document.querySelector('.mui-input-group').addEventListener('change',function(event){
+//				printObject(e.target,"e.target");
+				console.log("this.id = " + this.id);
+				payid = event.target.id;
+			});
+      		
+//    		document.getElementById("WX_APP").addEventListener('change',function(e){
+//				alert("wx");
+//    		});
+//    		document.getElementById("ALI_APP").addEventListener('change',function(e){
+//				alert("zfb");
+//    		});
+      	});
+		function beecloudPay(bcChannel) {
+			var _appid = "8b9a0f42-c263-40d9-a0fe-2d415028cdf4";
+			
+			/*
+			 * 构建支付参数 
+			 * 
+			 * app_id: BeeCloud控制台上创建的APP的appid，必填 
+			 * title: 订单标题，32个字节，最长支持16个汉字；必填
+			 * total_fee: 支付金额，以分为单位，大于0的整数，必填
+			 * bill_no: 订单号，8~32位数字和/或字母组合,确保在商户系统中唯一，必填
+			 * optional: 扩展参数,可以传入任意数量的key/value对来补充对业务逻辑的需求;此参数会在webhook回调中返回; 选填
+			 * bill_timeout: 订单失效时间,必须为非零正整数，单位为秒，必须大于360。选填 
+			 */
+			var payData = {
+				app_id: _appid,
+				channel: bcChannel,  
+				title: "春风家政充值",  
+				total_fee: 1, 
+				bill_no: beecloud.genBillNo(),    
+				optional: {user:"小明"},  
+				bill_timeout: 361,
+				return_url: "about.html"//wap支付成功后的回跳地址
+			};
+			/*
+			 *  发起支付
+			 *  payData: 支付参数
+			 *  cbsuccess: 支付成功回调
+			 *  cberror: 支付失败回调
+			 */
+			
+			//支付成功后的返回结果
+//			 	object: result >>> at js/myUtils.js:66
+//			     string:	tradeno = 20160701083530602 at js/myUtils.js:49
+//			     string:	rawdata = {"memo":"处理成功","resultStatus":"9000","result":"_input_charset=\"utf-8\"&it_b_pay=\"2016-07-01 08:41:31\"&notify_url=\"http:\/\/payservice.beecloud.cn\/bcpay\/aliPayDynamic\/8b9a0f42-c263-40d9-a0fe-2d415028cdf4_30b1aec2-6697-4bd1-87a8-e4844bba3ed8.php\"&out_trade_no=\"20160701083530602\"&partner=\"2088421221204972\"&payment_type=\"1\"&seller_id=\"2088421221204972\"&service=\"mobile.securitypay.pay\"&subject=\"春风家政充值\"&total_fee=\"0.01\"&success=\"true\"&sign_type=\"RSA\"&sign=\"XhbeWfLBW5LnxC3OJOklR3qBILfzgToOVWKl4ZRPDHhFaXCYlIEOBfse55Z8auIE8RIbbn5ykWas5I0beI7ieu41T3QV3b5AxuN0lQCorqLWc9E9EU9VU3ZpnRdr1gNyeRIoHk22E4UgJEO84\/n46G7yOs6J4gUU1LgEvaBQqFk=\""} at js/myUtils.js:49
+//			     object:	channel = [object Object] at js/myUtils.js:49
+//			         |-  string:	id = alipay at js/myUtils.js:49
+//			         |-  boolean:	serviceReady = true at js/myUtils.js:49
+//			         |-  string:	description = 支付宝 at js/myUtils.js:49
+//			     string:	signature = XhbeWfLBW5LnxC3OJOklR3qBILfzgToOVWKl4ZRPDHhFaXCYlIEOBfse55Z8auIE8RIbbn5ykWas5I0beI7ieu41T3QV3b5AxuN0lQCorqLWc9E9EU9VU3ZpnRdr1gNyeRIoHk22E4UgJEO84/n46G7yOs6J4gUU1LgEvaBQqFk= at js/myUtils.js:49
+//			     string:	url = http://payservice.beecloud.cn/bcpay/aliPayDynamic/8b9a0f42-c263-40d9-a0fe-2d415028cdf4_30b1aec2-6697-4bd1-87a8-e4844bba3ed8.php at js/myUtils.js:49
+//			     string:	description = 处理成功 at js/myUtils.js:49
+//			 	object: result <<< at js/myUtils.js:68
+			beecloud.payReq(payData, function(result) {
+				alert('支付成功');
+//				document.getElementById("status").innerHTML = 'success';
+//				document.getElementById("status").style.color = 'green'
+//				document.getElementById("status_msg").innerHTML = "-------- 支付成功 --------" +"\n感谢您的支持,我们会继续努力完善产品";
+//				console.log(result);
+				printObject(result,'result',3);
+			}, function(err) {
+//				document.getElementById("status").innerHTML = 'failed';
+//				document.getElementById("status").style.color = 'red'
+//				document.getElementById("status_msg").innerHTML = "-------- 支付失败 --------\n" +"错误码："+ e.code + '\n' + e.message;
+				printObject(err,"err");
+				alert("支付失败");
+			});
+		}
+    </script>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	    <h1 class="mui-title">充值</h1>
+	</header>
+	<div class="mui-content">
+		<ul id="list1" class="mui-table-view mui-table-view-chevron">
+			<li class="mui-table-view-cell mui-media">
+				<img class="mui-media-object mui-pull-left" src="../../images/client_imgs/icon_lipin.png">
+				<div class="please_icon">充值账户</div>
+			</li>
+			<li class="mui-table-view-cell mui-media">
+				<img class="mui-media-object mui-pull-left" src="../../images/client_imgs/icon_adress.png">
+				<div class="please_icon">充值金额</div>
+			</li>
+			<li class="mui-table-view-cell mui-collapse">
+				<a class="mui-navigate-right" href="#">
+					<img class="mui-media-object mui-pull-left" src="../../images/client_imgs/icon_adress.png">
+				</a>
+				<div class="please_icon">赠送项目</div>
+				<ul class="mui-table-view mui-table-view-chevron">
+					<li class="mui-table-view-cell zengsong">
+						优惠券有效期3个月
+					</li>
+					<li class="mui-table-view-cell zengsong">
+						30元深度保洁券1张
+					</li>
+					<li class="mui-table-view-cell zengsong">
+						10元厨房保养券1张
+					</li>
+					<li class="mui-table-view-cell zengsong">
+						10元抽油烟机清洗券1张
+					</li>
+				</ul>
+			</li>
+		</ul>
+		
+		<h5 style="background-color:#efeff4">选择支付方式</h5>
+		
+		<div class="mui-card" style="padding-top: 25px;padding-bottom: 5px;padding-left: 20px;">
+			<form class="mui-input-group">
+				<div class="mui-input-row mui-radio" style="height: 60px;">
+					<img class="mui-media-object mui-pull-left" src="../../images/client_imgs/icon_adress.png">
+					<div class="pay_icon" style="border:0px">
+						<h4>微信支付</h4>
+						<p>亿万用户的选择，更快更安全</p>
+					</div>
+					<input id="WX_APP" name="radio1" type="radio" value="1" checked>
+				</div>
+				<div class="mui-input-row mui-radio" style="height:60px; margin-top: 20px;"> 
+					<img class="mui-media-object mui-pull-left" src="../../images/client_imgs/icon_adress.png">
+					<div class="pay_icon" style="border:0px">
+						<h4>支付宝支付</h4>
+						<p>推荐支付宝用户使用</p>
+					</div>
+					<input id="ALI_APP" name="radio1" type="radio" value="2">
+				</div>
+			</form>
+		</div>
+		
+		<br/>		
+		
+		<form style="bottom:-43px;">
+			<div class="mui-input-row">
+				<label>推荐人号码:</label>
+				<input type="tel" placeholder="138...">
+			</div>
+			<div>
+				<button id="button_pay" type="button" class="button mui-btn mui-btn-success mui-btn-block">立即支付</button>
+			</div>
+		</form>
+	</div>
+		
+</body>
+</html>

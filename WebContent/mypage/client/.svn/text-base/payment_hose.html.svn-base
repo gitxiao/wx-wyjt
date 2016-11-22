@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
+    <script src="../../js/mui.min.js"></script>
+    <script src="../../js/myLogic.js"></script>
+    <script src="../../js/myUtils.js"></script>
+    <script src="../../js/beecloud.js"></script>
+    <script src="../../js/mui.picker.js"></script>
+	<script src="../../js/mui.poppicker.js"></script>
+	<script src="../../js/json2.js"></script>
+    
+    <link href="../../css/mui.min.css" rel="stylesheet"/>
+    <link href="../../css/app.css" rel="stylesheet"/>
+    <link href="../../css/mui.picker.css" rel="stylesheet" />
+	<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+    
+    <style>
+    	h5{
+	        padding-top: 8px;
+	        padding-bottom: 8px;
+	        text-indent: 12px;
+	    }
+    </style>
+    <script type="text/javascript" charset="UTF-8">
+    	var self;
+    	var payid = "WX_APP";
+      	var btnPay;
+      	var btnBind;
+      	var houseInfo;
+      	var houseShow;
+      	var noHouse;
+      	var estate;
+      	var payTitle;
+		var feeValue = 1000;		//充值金额
+		var houseFeeShow;
+		var waterFeeShow;
+			
+      	mui.init();
+      	
+      	
+      	var saveSuccess = function(response){
+			console.log("saveSuccess :  " + response);
+			disableCommitBtn(false);
+			
+			//当时为什么要这样写? 在这里刷新这两个页面貌似没有意义
+//				var menu_sub_money = plus.webview.getWebviewById('pages/client/menu_sub_money.html');
+//		        mui.fire(menu_sub_money,'myrefresh',{mobileNum:self.user.mobileNum});
+//		        
+//		        var menu_sub_home = plus.webview.getWebviewById('pages/client/menu_sub_home.html');
+//		        mui.fire(menu_sub_home,'myrefresh',{mobileNum:self.user.mobileNum});
+		}
+		
+		var commitSuccess = function(response){
+			console.log("commitSuccess :  " + response);
+			initPicker(response.children);
+			disableCommitBtn(false);
+		}
+		var commitError = function(xhr,type,errorThrown){
+			alert("网络错误,请稍后重试 ");
+			disableCommitBtn(false);
+		}
+			
+      	var initPicker = function(data){
+			btnBind = document.getElementById("button_bind");
+			var housePicker = new mui.PopPicker({layer: 4});
+			housePicker.setData(data);
+			btnBind.addEventListener("tap",btnTapped,false);
+				
+			function btnTapped(event){
+				housePicker.show(function(items) {
+					houseShow.innerHTML = items[0].text + items[1].text + items[2].text + items[3].text;
+					self.houseId = items[3].value;
+					console.log('self.houseId = ' + self.houseId);
+					console.log('self.user.mobileNum = ' + self.user.mobileNum);
+					if(self.houseId){
+						//在这里可以给提示, 确定后再执行数据库操作
+						operateDB('user/saveUserHouseInfo/',{mobileNum:self.user.mobileNum,houseId:self.houseId},saveSuccess,commitError);
+						disableCommitBtn(true);
+					}
+				});
+			}
+		}
+      	
+      	var disableCommitBtn = function(disable){
+      		if(disable){
+	      		btnBind.innerHTML = '修改中';
+	      		btnBind.disabled = true;
+      		}else{
+      			btnBind.innerHTML = '修改住址';
+	      		btnBind.disabled = false;
+      		}
+      	}
+      	
+      	var refreshPage = function(userdata){
+			if(!userdata){
+				return;
+			}
+			printObject(userdata,'userdata',2);
+			self.user = userdata.user;
+			self.house = userdata.houseDetail;
+			if(self.user && self.user.houseId > 0){
+				btnBind.innerHTML = '修改住址';
+				houseInfo.style.display = '';
+				noHouse.style.display = 'none';
+				selected = self.house.district.name + 
+								self.house.build.name + 
+								self.house.unit.name + 
+								self.house.house.name;
+				console.log('selected = ' + selected);										
+				houseShow.innerHTML = selected;
+				estate.innerHTML = self.house.house.estate;
+			}else{
+				btnBind.innerHTML = '绑定住址';
+				noHouse.style.display = '';
+				houseInfo.style.display = 'none';
+			}
+		}
+      	
+      	mui.plusReady(function() {
+      		var selected;
+      		self = plus.webview.currentWebview();
+      		payTitle = document.getElementById("payTitle");
+      		
+			houseFeeShow = document.getElementById("houseFee");
+			waterFeeShow = document.getElementById("waterFee");
+      		
+			btnPay = document.getElementById("button_pay");
+			btnBind = document.getElementById("button_bind");
+			
+			estate = document.getElementById("estate");
+			houseShow = document.getElementById("houseDetail");
+			houseInfo = document.getElementById("houseInfo");
+			noHouse = document.getElementById("noHouse");
+			
+      		if(self.feeType == 'estate'){
+				payTitle.innerHTML = '物业费';
+				houseFeeShow.style.display = '';
+				waterFeeShow.style.display = 'none';
+			}else if(self.feeType == 'water'){
+				payTitle.innerHTML = '水费';
+				houseFeeShow.style.display = 'none';
+				waterFeeShow.style.display = '';
+			}
+			
+			//加载用户数据
+			loadUserData({mobileNum:self.mobileNum});
+			
+			
+			//选择支付方式
+      		document.querySelector('.mui-input-group').addEventListener('change',function(event){
+				console.log("this.id == " + this.id);
+				payid = event.target.id;
+			});
+			
+			//注册按钮事件
+      		btnPay.addEventListener("tap",function(){
+				console.log("payid = " + payid);
+				beecloudPay(payid);
+			});
+			
+			
+			//加载所有楼房信息,
+			operateDB('district/findAllDetail/',{},commitSuccess,commitError);
+      	});
+      	
+		function beecloudPay(bcChannel) {
+			var _appid = bcChannel == "UN_WEB"?"c37d661d-7e61-49ea-96a5-68c34e83db3b":"44f01a13-965f-4b27-ba9f-da678b47f3f5"
+			
+			var paySuccess = function(){
+				alert('保存付费记录成功');
+			}
+			var payError = function(){
+				alert('保存付费记录失败');
+			}
+			
+			/*
+			 * 构建支付参数 
+			 * 
+			 * app_id: BeeCloud控制台上创建的APP的appid，必填 
+			 * title: 订单标题，32个字节，最长支持16个汉字；必填
+			 * total_fee: 支付金额，以分为单位，大于0的整数，必填
+			 * bill_no: 订单号，8~32位数字和/或字母组合,确保在商户系统中唯一，必填
+			 * optional: 扩展参数,可以传入任意数量的key/value对来补充对业务逻辑的需求;此参数会在webhook回调中返回; 选填
+			 * bill_timeout: 订单失效时间,必须为非零正整数，单位为秒，必须大于360。选填 
+			 */
+			var payData = {
+				app_id: _appid,
+				channel: bcChannel,  
+				title: payTitle.innerHTML,  
+				total_fee: feeValue * 100, 
+				bill_no: beecloud.genBillNo(),    
+				optional: {'houseId':self.house.house.id},  
+				bill_timeout: 361,
+				return_url: "http://www.dcloud.io/demo/pay"//wap支付成功后的回跳地址
+			};
+			/*
+			 *  发起支付
+			 *  payData: 支付参数
+			 *  cbsuccess: 支付成功回调
+			 *  cberror: 支付失败回调
+			 */
+			beecloud.payReq(payData, function(result) {
+				alert('支付成功');
+			}, function(err) {
+				alert('支付失败');
+				printObject(err,"err");
+				//测试, 本应在支付成功时调用
+				if(self.feeType == 'water'){
+					operateDB('houseInfo/payWaterById/',{id:self.house.house.id,feeValue:feeValue},paySuccess,payError);
+				}else if(self.feeType == 'estate'){
+					operateDB('houseInfo/payEstateById/',{id:self.house.house.id,feeValue:feeValue},paySuccess,payError);
+				}
+			});
+		}
+    </script>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	    <h1 id='payTitle' class="mui-title"></h1>
+	</header>
+	<div class="mui-content">
+		<ul id="list1" class="mui-table-view mui-table-view-chevron">
+			<li id='houseInfo' class="mui-table-view-cell mui-media">
+				<p>尊敬的用户你好, 你绑定的楼层为:</p>
+				<p id="houseDetail">住宅详情</p>
+			</li>
+			<li id='houseFee' class="mui-table-view-cell mui-media">
+				<p>物业费余额:<p id="estate"></p></p>
+				<p>物业费为:1000元.</p>
+				<p>充值金额:1000元</p>
+			</li>
+			<li id='waterFee' class="mui-table-view-cell mui-media">
+				<p>水费余额:<p id="estate"></p></p>
+				<p>充值金额:50元</p>
+			</li>
+			<li id='noHouse' class="mui-table-view-cell mui-media">
+				<p>尊敬的用户你好<br/>您还没有绑定住宅信息,绑定后才能使用此服务</p>
+			</li>
+		</ul>
+		<div>
+			<button id="button_bind" type="button" class="button mui-btn mui-btn-success mui-btn-block">绑定家庭地址</button>
+		</div>
+		
+		<h5 style="background-color:#efeff4">选择支付方式</h5>
+		
+		<div class="mui-card" style="padding-top: 25px;padding-bottom: 5px;padding-left: 20px;">
+			<form class="mui-input-group">
+				<div class="mui-input-row mui-radio" style="height: 60px;">
+					<img class="mui-media-object mui-pull-left" src="../../images/client_imgs/icon_adress.png">
+					<div class="pay_icon" style="border:0px">
+						<h4>微信支付</h4>
+						<p>亿万用户的选择，更快更安全</p>
+					</div>
+					<input id="WX_APP" name="radio1" type="radio" value="1" checked>
+				</div>
+				<div class="mui-input-row mui-radio" style="height:60px; margin-top: 20px;"> 
+					<img class="mui-media-object mui-pull-left" src="../../images/client_imgs/icon_adress.png">
+					<div class="pay_icon" style="border:0px">
+						<h4>支付宝支付</h4>
+						<p>推荐支付宝用户使用</p>
+					</div>
+					<input id="ALI_APP" name="radio1" type="radio" value="2">
+				</div>
+			</form>
+		</div>
+		
+		<div>
+			<br /><br />
+			<button id="button_pay" type="button" class="button mui-btn mui-btn-success mui-btn-block">立即支付</button>
+		</div>
+	</div>
+		
+</body>
+</html>

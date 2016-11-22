@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" href="../../css/app.css">
+		<style>
+			html,body {
+				background-color: #efeff4;
+			}
+			.title{
+				margin: 20px 15px 10px;
+				color: #6d6d72;
+				font-size: 15px;
+			}
+			.oa-contact-cell.mui-table .mui-table-cell {
+				padding: 11px 0;
+				vertical-align: middle;
+			}
+			
+			.oa-contact-cell {
+				position: relative;
+				margin: -11px 0;
+			}
+	
+			.oa-contact-avatar {
+				width: 75px;
+			}
+			.oa-contact-avatar img {
+				border-radius: 50%;
+			}
+			.oa-contact-content {
+				width: 100%;
+			}
+			.oa-contact-name {
+				margin-right: 20px;
+			}
+			.oa-contact-name, oa-contact-position {
+				float: left;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content" style="background-color:#fff">
+		    <h5 style="background-color:#efeff4">缴费</h5>
+		    <ul class="mui-table-view">
+				<li class="mui-table-view-cell mui-media">
+					<a href="javascript:;">
+						<img class="mui-media-object mui-pull-left" src="../../images/home/house_pay.png">
+						<div class="mui-media-body">
+							物业费
+							<p class='mui-ellipsis'>暂时紧支持九州御府的物业费</p>
+						</div>
+						<button id="hose" name="payment" type="button" class="mui-btn mui-btn-danger">
+							缴费
+						</button>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media">
+					<a href="javascript:;">
+						<img class="mui-media-object mui-pull-left" src="../../images/home/water_pay.png">
+						<div class="mui-media-body">
+							水费
+							<p class='mui-ellipsis'>暂时紧支持九州御府的水费</p>
+						</div>
+						<button id="water" name="payment" type="button" class="mui-btn mui-btn-danger">
+							缴费
+						</button>
+					</a>
+				</li>
+		    </ul>    
+		</div>
+	</body>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/myWebSQL.js"></script>
+	<script src="../../js/myUtils.js"></script>
+	<script src="../../js/myLogic.js"></script>
+	<script src="../../js/myConstant.js"></script>
+	<script>
+		console.log('缴费 页面');
+		mui.init({
+			swipeBack:true //启用右滑关闭功能
+		});
+		var mobileNum;
+		
+		mui.plusReady(function() {
+			addRefreshEvent(function(data){
+				mobileNum = data.mobileNum;
+			});				//注册刷新页面的回调函数,当需要刷新时,触发'refresh'事件即可
+//			readUserInfoFromWebSql(function(data){
+//				mobileNum = data.mobileNum;
+//			});				//第一次初始化页面时就得加载数据,判断用户有没有登录
+			mobileNum = plus.storage.getItem('mobileNum');
+			
+			var list = document.getElementsByName("payment");
+//			for (var i = 0; i < list.length; i++) {
+				list[0].addEventListener("tap",function(e){btnTapped(e,'estate')});
+				list[1].addEventListener("tap",function(e){btnTapped(e,'water')});
+//			}
+			function btnTapped(e,feeType){
+				if(mobileNum){
+					//alert("用户已登录则应该显示用户的余额和优惠券数据");
+					console.log("用户已登录  mobileNum => " + mobileNum);
+					mui.openWindow({
+					    url:'payment_hose.html',
+					    id:'payment_hose.html',
+					    extras:{
+					    	mobileNum:mobileNum,
+					    	feeType:feeType,
+					    }
+					}) ;
+					console.log("用户已登录  mobileNum <= " + mobileNum);
+				}else{
+					goLogin('menu_sub_money.html');
+				}
+			}
+		});
+		
+	</script>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/style.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/app.css">
+		<style>
+			.yz_content{
+			  	position: absolute;
+			  	right: 5px;
+			  	top: 10px;
+			}
+			
+			.area {
+				margin: 20px auto 0px auto;
+			}
+			
+			.mui-input-group {
+				margin-top: 10px;
+			}
+			
+			.mui-input-group:first-child {
+				margin-top: 20px;
+			}
+			
+			.mui-input-group label {
+				width: 22%;
+			}
+			
+			.mui-input-row label~input,
+			.mui-input-row label~select,
+			.mui-input-row label~textarea {
+				width: 78%;
+			}
+			
+			.mui-checkbox input[type=checkbox],
+			.mui-radio input[type=radio] {
+				top: 6px;
+			}
+			
+			.mui-content-padded {
+				margin-top: 25px;
+			}
+			
+			.mui-btn {
+				padding: 10px;
+			}
+			
+			.link-area {
+				display: block;
+				margin-top: 25px;
+				text-align: center;
+			}
+			
+			.spliter {
+				color: #bbb;
+				padding: 0px 8px;
+			}
+			
+		</style>
+
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">快速登录</h1>
+		</header>
+		<div class="mui-content">
+			<br />
+			<p class="mycenter">为了更好地为您服务，请先验证您的手机</p>
+			<form id='login-form' class="mui-input-group">
+				<div class="mui-input-row" style="height:60px;">
+					<input id='phoneNum' type="number" class="yz_content mui-input-clear mui-input" placeholder="请输入手机号">
+					<button id="getCode" class="yz_content mui-btn mui-btn-success mui-btn-block" style="width:40%;">获取验证码</button>
+				</div>
+				<div class="mui-input-row" style="height:60px;">
+					<input id='code' type="text" class="yz_content mui-input-clear mui-input" placeholder="验证码">
+					<a href="#" class="yz_content" style="top:20px;">没有收到？</a>
+				</div>
+			</form>
+			<div class="mui-content-padded">
+				<button id='login' class="mui-btn mui-btn-block mui-btn-primary">登录</button>
+				<button id='login1' class="mui-btn mui-btn-block mui-btn-primary">无验证码登录</button>
+				<!--<p class="mycenter">点击登录，即表示您同意<a id="xieyi" href="user_protocol.html">《春风家政宝使用协议》</a></p>-->
+			</div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/mui.enterfocus.js"></script>
+		<script src="../../js/app.js"></script>
+		<script src="../../js/myUtils.js"></script>
+		<script src="../../js/myWebSQL.js"></script>
+		<script src="../../js/myLogic.js"></script>
+		<script src="../../js/myConstant.js"></script>
+		<script src="../../js/jquery.min.js"></script>
+		<script>
+		
+			var mobileNum;
+			var waitTime = 10000;
+			var codeUrl = baseUrl + 'yunxin/';
+			var btnLogin;
+			var btnGetCode;
+			var btnGetCodeOnTap;
+			var btnLoginOnTap;
+			var self;
+			var checkCode = true;
+			
+			mui.init();
+			var loginSuccess = function(data){     
+				console.log("loginSuccess data = " + data);
+				//保存到websql
+				if(data && data != "-1" && data != -1){
+					saveOrUpdate('user_info',['mobileNum'],[mobileNum]);		
+					plus.storage.setItem('mobileNum',mobileNum);
+//					plus.storage.getItem('mobileNum');
+					
+	//				var self = plus.webview.currentWebview();
+					var userInfo = {mobileNum:mobileNum};
+					
+//			        var menu_sub_vip = plus.webview.getWebviewById('pages/client/menu_sub_vip.html');
+//			        mui.fire(menu_sub_vip,'myrefresh',userInfo);
+			       
+			       	var menu_sub_mine = plus.webview.getWebviewById('pages/client/menu_sub_mine.html');
+					mui.fire(menu_sub_mine,'myrefresh',userInfo);
+			        
+			        var menu_sub_money = plus.webview.getWebviewById('pages/client/menu_sub_money.html');
+			        mui.fire(menu_sub_money,'myrefresh',userInfo);
+			        
+			        var menu_sub_home = plus.webview.getWebviewById('pages/client/menu_sub_home.html');
+			        mui.fire(menu_sub_home,'myrefresh',userInfo);
+			        
+			        
+			        var last = plus.webview.getWebviewById(self.lastWebviewId);
+			        if(last){
+			        	mui.fire(last,'myrefresh',userInfo);
+			        }
+			        
+			        mui.alert("登录成功","提示","确定",mui.back);		//登录后返回上个页面
+				}else{
+					mui.toast("网络错误, 请稍后重试");
+				}
+			}
+			
+			function loginError(response){
+				printObject(response,"loginError response");
+				console.log("loginError 保存失败");
+			}
+			
+			function userLogin(num){
+//				operateDB('user/saveUser/',{json:"{\"mobileNum\":" + num + "}"},saveSuccess,saveError);
+				operateDB('user/userLogin/',{mobileNum:num},loginSuccess,loginError);
+			}
+			
+			(function($) {
+				var network = true;
+				if(mui.os.plus){
+					mui.plusReady(function () {
+						if(plus.networkinfo.getCurrentType() == plus.networkinfo.CONNECTION_NONE){
+							network = false;
+						}else{
+						}
+					});
+				}
+				
+				//设置全局beforeSend
+//				$.ajaxSettings.beforeSend = function(xhr, setting) {
+//					//beforeSend演示,也可在$.ajax({beforeSend:function(){}})中设置单个Ajax的beforeSend
+//					console.log('beforeSend:::' + JSON.stringify(setting));
+//				};
+//				//设置全局complete
+				$.ajaxSettings.complete = function(xhr, status) {
+//					console.log('complete:' + status);
+//					printObject(xhr,"xhr",2);
+				}
+				
+				var sendSuccess = function(response){
+					console.log("sendSuccess 发送结果:" + response.code);
+					var result = response.code;
+					if(result == 200){
+						console.log("发送成功");
+					}else if(result == -1){
+						console.log("发送异常");
+						mui.alert('短信发送失败,请联系客服人员.错误代码:' + result);
+					}else{
+						console.log("发送异常");
+						mui.alert('短信发送失败,请联系客服人员.错误代码:' + result);
+					}
+					disableGetBtn(false);
+				}
+				var sendError = function(xhr,type,errorThrown){
+					console.log("sendError 发送失败");
+					disableGetBtn(false);
+				}
+				
+				var verifySuccess = function(response){
+					console.log("verifySuccess 验证结果:" + response.code);
+					var result = response.code;
+					if(result == 200 || !checkCode || true){
+						console.log("验证成功");
+						userLogin(mobileNum);
+					}else if(result == -1){
+						console.log("验证异常");
+						mui.alert('验证码或网络错误,请重试.错误代码:' + result);
+					}else{
+						console.log("验证异常");
+						mui.alert('验证码或网络错误,请重试.错误代码:' + result);
+					}
+					disableloginBtn(false);
+				}
+				var verifyError = function(xhr,type,errorThrown){
+					console.log("验证失败");
+					disableloginBtn(false);
+				}
+				var disableGetBtn = function(able){
+					btnGetCode.disabled = able;
+					if(able){
+						btnGetCode.innerHTML = '获取中...';
+					}else{
+						btnGetCode.innerHTML = '重新获取';
+					}
+				}
+				var disableloginBtn = function(able){
+					btnLogin.disabled = able;
+					if(able){
+						btnLogin.innerHTML = '登录中...';
+					}else{
+						btnLogin.innerHTML = '重新登录';
+					}
+				}
+				
+				btnGetCodeOnTap = function(){
+					mobileNum = document.getElementById("phoneNum").value;
+					if(verifyMobileNum(mobileNum)){
+						operateDB('yunxin/sendCode/',{mobileNum:mobileNum},sendSuccess,sendError);
+						disableGetBtn(true);
+						setTimeout(function(){disableGetBtn(false);}, waitTime);
+					}else{
+						alert("请输入正确的手机号码！");
+					}
+				}
+				
+				btnLoginnTap = function(){
+					checkCode = true;
+					mobileNum = document.getElementById("phoneNum").value;
+					var code = document.getElementById("code").value;
+					mobileNum = mobileNum ? mobileNum : '13812345678';
+//					code = code ? code : 1234;
+					if(!verifyMobileNum(mobileNum)){
+						alert("请输入正确的手机号码！ ");
+					}else if(!/^[0-9]{4}$/.test(code)){
+						alert("请输入正确的验证码！");
+					}else{
+						operateDB('yunxin/verifyCode/',{mobileNum:mobileNum,code:code},verifySuccess,verifyError);
+						disableloginBtn(true);
+						setTimeout(function(){disableloginBtn(false);}, waitTime);
+					}
+				}
+				btnLoginnTap1 = function(){
+					checkCode = false;
+					mobileNum = document.getElementById("phoneNum").value;
+					var code = document.getElementById("code").value;
+					mobileNum = mobileNum ? mobileNum : '13812345678';
+//					code = code ? code : 1234;
+					if(!verifyMobileNum(mobileNum)){
+						alert("请输入正确的手机号码！ ");
+					}else if(!/^[0-9]{4}$/.test(code)){
+						alert("请输入正确的验证码！");
+					}else{
+						operateDB('yunxin/verifyCode/',{mobileNum:mobileNum,code:code},verifySuccess,verifyError);
+						disableloginBtn(true);
+						setTimeout(function(){disableloginBtn(false);}, waitTime);
+					}
+				}
+			})(mui);
+			
+			mui.ready(function(){
+				btnLogin = document.getElementById("login");
+				btnGetCode = document.getElementById("getCode");
+				//发送请求按钮的点击事件
+				btnLogin.addEventListener("tap",btnLoginnTap);
+				mui('#login1')[0].addEventListener("tap",btnLoginnTap1);
+				btnGetCode.addEventListener('tap', btnGetCodeOnTap);
+				
+				
+//				mui('#xieyi').on('tap', 'a', function(){	//不起作用
+//				$('p').on('tap', 'a', function(){			//用$屏幕会闪,原因不明
+				mui('p').on('tap', 'a', function(){
+					console.log("----+++------");
+					mui.openWindow(this.href);
+				});
+			});
+			mui.plusReady(function() {
+				self = plus.webview.currentWebview();
+			});
+		</script>
+	</body>
+
+</html>

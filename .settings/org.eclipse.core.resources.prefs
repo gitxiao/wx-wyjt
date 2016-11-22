@@ -1,5 +1,13 @@
-#Sat Nov 12 15:48:12 CST 2016
+#Sat Nov 19 15:27:59 CST 2016
 eclipse.preferences.version=1
+encoding//WebContent/demos/index.html=UTF-8
+encoding//WebContent/dist/demos/index.html=UTF-8
+encoding//WebContent/guide.html=UTF-8
+encoding//WebContent/index.html=UTF-8
+encoding//WebContent/mypage/client/confirmOrder.html=UTF-8
+encoding//WebContent/mypage/client/menu_sub_home.html=UTF-8
+encoding//WebContent/mypage/client/payOrder.html=UTF-8
+encoding//WebContent/mypage/client/quick_login.html=UTF-8
 encoding//src/com/bepotato/action=UTF-8
 encoding//src/com/bepotato/action/AddAdmin.java=UTF-8
 encoding//src/com/bepotato/util/MessageUtil.java=UTF-8

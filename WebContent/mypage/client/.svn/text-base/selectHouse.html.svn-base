@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" href="../../css/app.css">
+		<link href="../../css/mui.picker.css" rel="stylesheet" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<style>
+			html,body {
+				background-color: #efeff4;
+			}
+			.about_text{
+				
+			}
+		</style>
+		
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/myUtils.js"></script>
+		<script src="../../js/json2.js"></script>
+		<script src="../../js/myLogic.js"></script>
+		<script src="../../js/mui.picker.js"></script>
+		<script src="../../js/mui.poppicker.js"></script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 id="title" class="mui-title">选择家庭住址</h1>
+		</header>
+		
+		<br/>
+		
+		<div class="mui-content" style="margin-top: 0px;">
+		    <div class="mui-content-padded">
+			    <button id='showPicker' name='btnPicker' class="mui-btn mui-btn-block" type='button'>选择小区</button>
+				<div id='result' name='resultPicker'></div>
+		    </div>
+		    
+		    <br/>
+		    <div>
+				<button id="commitHouse" type="button" class="button mui-btn mui-btn-negative mui-btn-block">确定</button>
+			</div>
+		</div>
+		
+		
+		<script type="text/javascript" charset="utf-8">
+			 //mui初始化
+			 
+			mui.init();
+			
+			var initPicker = function(data){
+				
+				var btn = document.getElementById("showPicker");
+				var housePicker = new mui.PopPicker({layer: 4});
+				housePicker.setData(data);
+				btn.addEventListener("tap",btnTapped,false);
+					
+				function btnTapped(event){
+					housePicker.show(function(items) {
+						btn.innerHTML = items[0].text + items[1].text + items[2].text + items[3].text;
+						self.houseId = items[3].value;
+						console.log('self.houseId = ' + self.houseId);
+					});
+				}
+			}
+			
+			mui.plusReady(function() {
+				var self = plus.webview.currentWebview();
+				var btnCommit = document.getElementById("commitHouse");
+				
+				var commitSuccess = function(response){
+					console.log("commitSuccess:" + response);
+					if(response && response.id){
+						mui.alert('地址绑定成功');
+					}else{
+						alert("地址绑定失败,请稍后重试");
+					}
+					disableCommitBtn(false);
+				}
+				var commitError = function(xhr,type,errorThrown){
+					alert("网络错误,请稍后重试");
+					disableCommitBtn(false);
+				}
+				var disableCommitBtn = function(able){
+					btnCommit.disabled = able;
+					if(able){
+						btnCommit.innerHTML = '提交中...';
+					}else{
+						btnCommit.innerHTML = '确定提交';
+					}
+				}
+				
+				var saveSuccess = function(response){
+					console.log("saveSuccess :  " + response);
+				}
+				
+				btnCommit.addEventListener("tap",function(){
+					if(!self.houseId){
+						alert("请选择您要绑定的住址");
+					}else{
+						var jsonData = JSON.stringify({city:city,street:street,detail:detail});
+						operateDB('address/saveAddress/',{jsonData:jsonData,mobileNum:self.mobileNum},saveSuccess,commitError);
+						disableCommitBtn(true);
+					}
+				});
+				
+				var commitSuccess = function(response){
+					console.log("commitSuccess :  " + response);
+					initPicker(response.children);
+				}
+				var commitError = function(xhr,type,errorThrown){
+					alert("网络错误,请稍后重试 ");
+				}
+				operateDB('district/findAllDetail/',{},commitSuccess,commitError);
+			});
+		</script>
+	</body>
+</html>
+

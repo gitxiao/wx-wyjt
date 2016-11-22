@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" href="../../css/app.css">
+		<style>
+			html,body {
+				background-color: #efeff4;
+			}
+			.about_text{
+				
+			}
+		</style>
+		
+		<script src="../../js/mui.min.js"></script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 id="title" class="mui-title">关于我们</h1>
+		</header>
+		<div class="mui-content">
+			<br />
+			<div class="mycenter" style="margin-top:30px;margin-bottom:40px">
+				<img id="pay_image" class="imgcenter" src="../../images/client_imgs/icon.png" width="30%"/>
+				<p>春风家政</p>
+				<p>版权所有：河北春风软件科技股份有限公司</p>
+			</div>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell" style="height:50px">
+					<a class="about_text">
+						微信公众号：
+					</a>
+				</li>
+				<li class="mui-table-view-cell" style="height:50px">
+					<a class="about_text">
+						公司网站：
+					</a>
+				</li>
+				<li class="mycenter mui-table-view-cell" style="height:50px">
+					<a class="about_text">
+						
+					</a>
+				</li>
+			</ul>
+		</div>
+		
+		<script type="text/javascript" charset="utf-8">
+			 //mui初始化
+			mui.init();
+		</script>
+	</body>
+</html>
+

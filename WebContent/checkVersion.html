@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="./css/mui.min.css" rel="stylesheet" />
+		<link href="./css/style.css" rel="stylesheet" />
+		<link rel="stylesheet" href="./css/app.css">
+		<style>
+			.yz_content{
+			  	position: absolute;
+			  	right: 5px;
+			  	top: 10px;
+			}
+			
+			.area {
+				margin: 20px auto 0px auto;
+			}
+			
+			.mui-input-group {
+				margin-top: 10px;
+			}
+			
+			.mui-input-group:first-child {
+				margin-top: 20px;
+			}
+			
+			.mui-input-group label {
+				width: 22%;
+			}
+			
+			.mui-input-row label~input,
+			.mui-input-row label~select,
+			.mui-input-row label~textarea {
+				width: 78%;
+			}
+			
+			.mui-checkbox input[type=checkbox],
+			.mui-radio input[type=radio] {
+				top: 6px;
+			}
+			
+			.mui-content-padded {
+				margin-top: 25px;
+			}
+			
+			.mui-btn {
+				padding: 10px;
+			}
+			
+			.link-area {
+				display: block;
+				margin-top: 25px;
+				text-align: center;
+			}
+			
+			.spliter {
+				color: #bbb;
+				padding: 0px 8px;
+			}
+			
+		</style>
+
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">检查版本</h1>
+		</header>
+		<div class="mui-content">
+			
+			<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+			<h3 id='checking' style="text-align: center;">正在检查最新版本...</h3>
+			<br />
+			
+			<div class="mui-content-padded" style="margin-bottom:.42667rem;">
+				<button id='login' class="mui-btn mui-btn-block mui-btn-primary" style="display: none;">下载最新版本</button>
+			</div>
+		</div>
+		<script src="./js/mui.min.js"></script>
+		<script src="./js/myUtils.js"></script>
+		<script src="./js/myLogic.js"></script>
+		<script>
+		
+			var ver = '0.0.2';
+			var mobileNum;
+			var waitTime = 10000;
+			var btnLogin;
+			var btnGetCode;
+			var btnGetCodeOnTap;
+			var btnLoginOnTap;
+			var self;
+			var accountCode;
+			var wt;
+			
+			mui.init();
+			var oldBack = mui.back;
+			mui.back = function() {
+				if(confirm('确认退出？')){
+					plus.runtime.quit();
+				}
+			}
+			
+			var btnLoginnTap = function(){
+				//点击下载最新版
+				console.log('点击下载最新版');
+			}
+			
+			var loginSuccess = function(response){     
+				wt.close();
+				mui('#checking')[0].style.display = 'none';
+				printObject(response,'response');
+				if(response.version == ver){
+					mui.toast('已经是最新版');
+					goNextPage();
+				}else{
+					mui.toast('不是最新版');
+					mui('#login')[0].style.display = '';
+				}
+			}
+			var loginError = function(response){
+				wt.close();
+				mui('#checking')[0].style.display = 'none';
+				goNextPage();
+			}
+			
+			var goNextPage = function(){
+				setTimeout(function(){
+					mui.openWindow({
+						url:'guide.html'
+					});
+				},2000);
+			}
+			
+			mui.plusReady(function(){
+				btnLogin = document.getElementById("login");
+				//发送请求按钮的点击事件
+				btnLogin.addEventListener("tap",btnLoginnTap);
+				
+				wt = plus.nativeUI.showWaiting();
+				operateDB("version/findNew",{test:0},loginSuccess,loginError); 
+			});
+			
+		</script>
+	</body>
+</html>

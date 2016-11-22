@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" href="../../css/app.css">
+		<style>
+			html,body {
+				background-color: #efeff4;
+			}
+			.about_text{
+				
+			}
+			.addressLi{
+				/*height:75px;*/
+				list-style-type:none;
+				margin-top: 15px;
+				margin-bottom: 0px;
+				margin-left: 0px;
+				height:45px;
+			}
+		</style>
+		
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/myUtils.js"></script>
+		<script src="../../js/json2.js"></script>
+		<script src="../../js/myConstant.js"></script>
+		<script src="../../js/myLogic.js"></script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 id="addressTitle" class="mui-title"></h1>
+		</header>
+		
+		<div class="mui-content" >
+			
+			<ul id='addressForm' class="mui-input-group">
+			</ul>
+		    
+
+			<form class="mui-input-group">
+				<div class="mui-input-row">
+					<label>城市/乡镇</label>
+					<input id="cityInput" type="text" class="mui-input-speech" placeholder="城市，乡镇"/>
+				</div>
+				<div class="mui-input-row">
+					<label>街道</label>
+					<input id="streetInput" type="text" class="mui-input-speech mui-input-clear" placeholder="街道"/>
+				</div>
+				<div class="mui-input-row">
+					<label>小区/单位</label>
+					<input id="detailInput" type="text" class="mui-input-speech mui-input-clear" placeholder="小区 / 单位，门牌号"/>
+				</div>
+			</form>
+			
+			<br />
+		    <div>
+				<button id="add_address" type="button" class="button mui-btn mui-btn-negative mui-btn-block">添加新地址</button>
+			</div>
+			
+		</div>
+		
+		
+		<script type="text/javascript" charset="utf-8">
+			 //mui初始化
+			mui.init();
+			
+			var addressForm = document.querySelector('#addressForm');
+			var dialog = document.querySelector('#addressTemplate');
+			var radioList;
+			var addressNum = 0;
+			var addressArray = [];
+			var selectedIndex;
+			var wt;
+			
+			var btnCommit;
+			var btnConfirm;
+			var addressTitle;
+			var self;
+			
+			var temp = 	'<div class="mui-table mui-input-row mui-radio">' +
+		                	'<div class="mui-table-cell mui-col-xs-10">' +
+		                    	'<h5 id="detailShow">春风集团</h5>' +
+		                    	'<p id="streetShow" class="mui-h6">冀州区冀新西路86号</p>' +
+		                	'</div>' +
+		                	'<input id="WX_APP" name="addressRadio" type="radio" value="1">' +
+	            		'</div>';
+			
+			//添加显示一条地址的html元素
+				
+			var addAddressHtml = function(data){
+				var li = document.createElement('li');
+				li.innerHTML = temp;
+				
+				li.querySelector('h5').innerHTML = data.detail;
+				li.querySelector('p').innerHTML = data.city + ' ' + data.street;
+				li.querySelector('input').id = + addressNum;
+				li.setAttribute('class','addressLi');
+				addressForm.appendChild(li.cloneNode(true));
+				addressArray[addressNum] = data;
+				addressNum++;
+			}
+			
+			var initPage = function(){
+				
+				btnCommit = document.getElementById("add_address");
+				addressTitle = document.getElementById('addressTitle');
+				
+				if(self.mode == 'select'){
+					//下订单时的选择模式
+					addressTitle.innerHTML = '选择服务地址';
+				}else if(self.mode == 'show'){
+					//从'我的'页面进入时的展示模式
+					addressTitle.innerHTML = '服务地址';
+				}
+			}
+			
+			
+			var commitSuccess = function(response){
+				console.log("commitSuccess:" + response);
+				if(response && response.id){
+					mui.alert('地址添加成功');
+					addAddressHtml(response);
+				}else{
+					alert("地址添加失败,请稍后重试");
+				}
+				disableCommitBtn(false);
+			}
+			var commitError = function(xhr,type,errorThrown){
+				alert("网络错误,请稍后重试");
+				disableCommitBtn(false);
+			}
+			var disableCommitBtn = function(able){
+				btnCommit.disabled = able;
+				if(able){
+					btnCommit.innerHTML = '添加中...';
+				}else{
+					btnCommit.innerHTML = '添加新地址';
+				}
+			}
+				
+			var initEvent = function(){
+				btnCommit.addEventListener("tap",function(){
+					var city = document.getElementById("cityInput").value;
+					var street = document.getElementById("streetInput").value;
+					var detail = document.getElementById("detailInput").value;
+					
+//					city = city ? city : '冀州';
+//					street = street ? street : '冀新西路86号';
+//					detail = detail ? detail : '春风集团-春风软件';
+					console.log("添加新地址:" + city + street + detail);
+					if(!city || !street || ! detail){
+						alert("请输入完整的地址信息");
+					}else{
+						var jsonData = JSON.stringify({city:city,street:street,detail:detail});
+						operateDB('address/saveAddress/',{para:jsonData,mobileNum:self.mobileNum},commitSuccess,commitError);
+						disableCommitBtn(true);
+					}
+				});
+				
+			}
+			
+			mui.plusReady(function() {
+				self = plus.webview.currentWebview();
+				
+				initPage();
+				initEvent();
+				
+				//添加地址显示条目
+				var loadDataSuccess = function(addressData){
+					wt.close();
+					if(addressData && addressData != '-1' && addressData != -1){
+						var address;
+						for (var i = 0;i < addressData.length;i ++) {
+							addAddressHtml(addressData[i]);
+						}
+					}else{
+						mui.confirm('加载失败, 请稍后重试', '提示','确定', function(e){
+							if (e.index == 0) {			//右侧按钮
+								mui.back();
+							} else {					//左侧按钮
+								mui.back();
+							}
+						});
+					}
+				}
+				
+				var loadDataError = function(){
+					wt.close();
+					mui.confirm('地址加载失败, 是否重新加载', '提示','重新加载', function(e){
+						if (e.index == 0) {			//右侧按钮
+							loadAddressData();
+						} else {					//左侧按钮
+							mui.back();
+						}
+					});
+				}
+				
+				function loadAddressData(){
+					console.log('loadAddressData self.mobileNum = ' + self.mobileNum);
+					wt = plus.nativeUI.showWaiting();
+					operateDB('address/findAddressesByMobileNum/',{mobileNum:self.mobileNum},loadDataSuccess,loadDataError);
+				}
+				//单选框添加事件监听
+				radioList = document.getElementsByName("addressRadio");
+				document.querySelector('.mui-input-group').addEventListener('change',function(event){
+					console.log("this.id,event.target.id= " + this.id + ',' + event.target.id);
+					selectedIndex = parseInt(event.target.id);		//选中的地址的索引
+					//选择了服务地址, 进入下订单页面
+						mui.openWindow({
+						    url:'../client/confirmOrder.html',
+						    extras:{
+//						    	user:self.user,
+								mobileNum:self.mobileNum,
+						    	serviceId:self.serviceId,
+						    	address:addressArray[selectedIndex],
+						    }
+						});
+				});
+				loadAddressData();
+				
+			});
+		</script>
+	</body>
+</html>
+

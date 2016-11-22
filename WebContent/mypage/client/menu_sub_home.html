@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/myUtils.js"></script>
+		<script src="../../js/myLogic.js"></script>
+		<script src="../../js/myConstant.js"></script>
+		<script src="../../js/myWebSQL.js"></script>
+		<script src="../../js/json2.js"></script>
+		
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css"/>
+		<style>
+			h5{
+		        padding-top: 8px;
+		        padding-bottom: 8px;
+		        text-indent: 12px;
+		    }
+		    
+			.mui-table-view.mui-grid-view .mui-table-view-cell .mui-media-body{
+				font-size: 15px;
+				margin-top:8px;
+				color: #333;
+			}
+			
+			.flex-container {
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-flex-flow: row wrap;
+				justify-content: space-between;
+				text-align: center;
+			}
+			.mui-content-padded {
+				padding: 10px;
+			}
+			.mui-content-padded a {
+				margin: 3px;
+				width: 50px;
+				height: 50px;
+				display: inline-block;
+				text-align: center;
+				background-color: #fff;
+				border: 1px solid #ddd;
+				border-radius: 25px;
+				background-clip: padding-box;
+			}
+			.mui-content-padded a .mui-icon {
+				margin-top: 12px;
+			}
+			.mui-spinner,
+			.mui-spinner-white {
+				margin-top: 12px
+			}
+			.active .mui-spinner-indicator {
+				background: #007AFF;
+			}
+			.mui-content a {
+				color: #8F8F94;
+			}
+			.mui-content a.active {
+				color: #007aff;
+			}
+		</style>
+		
+		
+	</head>
+
+	<body>
+		<div id='content1' class="mui-content">
+			<div id="slider" class="mui-slider">
+				<div id="actContainer" class="mui-slider-group mui-slider-loop" >
+					<div class="mui-slider-item mui-slider-item-duplicate">
+						<a href="javascript:void(0);" name='actionA' id='action0'>
+							<img id="img0" name="actImg" src="../../images/home/cfjz_akhd.png" style="width:100%;height: 266px;">
+							<p id="p0" name="actP" class="mui-slider-title">春风家政五一送健康大型优惠清洗活动</p>
+						</a>
+					</div>
+					<div class="mui-slider-item">
+						<a href="javascript:void(0);" name='actionA' id='action0'>
+							<img id="img1" name="actImg" src="../../images/home/cfjz_akhd.png" style="width:100%;height: 266px;">
+							<p id="p1" name="actP" class="mui-slider-title">春风家政五一送健康大型优惠清洗活动</p>
+						</a>
+					</div>
+					<div class="mui-slider-item">
+						<a href="javascript:void(0);" name='actionA' id='action1'>
+							<img id="img2" name="actImg" src="../../images/home/cfjz_hd.png" style="width:100%;height: 266px;">
+							<p id="p2" name="actP" class="mui-slider-title">春风家政夏季送健康活动盛大开幕</p>
+						</a>
+					</div>
+					<div class="mui-slider-item">
+						<a href="javascript:void(0);" name='actionA' id='action2'>
+							<img id="img3" name="actImg" src="../../images/home/cfjz_sng.png" style="width:100%;height: 266px;">
+							<p id="p3" name="actP" class="mui-slider-title">春风家政公司服务我市青少年活动中心</p>
+						</a>
+					</div>
+					<div class="mui-slider-item">
+						<a href="javascript:void(0);" name='actionA' id='action3'>
+							<img id="img4" name="actImg" src="../../images/home/cfjz_sty.png" style="width:100%;height: 266px;">
+							<p id="p4" name="actP" class="mui-slider-title">春风家政公司服务我市大型娱乐休闲场所鑫悦生态园</p>
+						</a>
+					</div>
+					<div class="mui-slider-item mui-slider-item-duplicate">
+						<a href="javascript:void(0);" name='actionA' id='action3'>
+							<img id="img5" name="actImg" src="../../images/home/cfjz_sty.png" style="width:100%;height: 266px;">
+							<p id="p5" name="actP" class="mui-slider-title">春风家政公司服务我市大型娱乐休闲场所鑫悦生态园</p>
+						</a>
+					</div>
+				</div>
+				<div id='actPoints' class="mui-slider-indicator mui-text-right">
+					<div class="mui-indicator mui-active"></div>
+					<div class="mui-indicator"></div>
+					<div class="mui-indicator"></div>
+					<div class="mui-indicator"></div>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="mui-content" style="background-color:#fff">
+			
+		    <h5 style="background-color:#efeff4">服务列表</h5>
+		    <ul class="mui-table-view mui-grid-view">
+		        <li id="jiad_wx" class="mui-table-view-cell mui-media mui-col-xs-3" name="serviceListBtn">
+		            <a href="javascript:void(0);">
+		                <img class="mui-media-object" src="../../images/service0.png">
+		                <div class="mui-media-body">家电维修</div>
+		            </a>
+		        </li>
+		        <li id="jiad_clean" name="serviceListBtn" class="mui-table-view-cell mui-media mui-col-xs-3">
+		            <a  href="javascript:void(0);">
+		                <img class="mui-media-object" src="../../images/service1.png">
+		                <div class="mui-media-body">家电清洗</div>
+		            </a>
+		        </li>
+		        <li id="company_clean" name="serviceListBtn" class="mui-table-view-cell mui-media mui-col-xs-3">
+		            <a href="javascript:void(0);">
+		            	<img class="mui-media-object" src="../../images/service2.png">
+		                <div class="mui-media-body">企业保洁</div>
+		            </a>
+		        </li>
+		        <li id="air_clean" name="serviceListBtn" class="mui-table-view-cell mui-media mui-col-xs-3">
+		            <a href="javascript:void(0);">
+		                <img class="mui-media-object" src="../../images/service3.png">
+		                <div class="mui-media-body">空气治理</div>
+		            </a>
+		        </li>
+		        
+		        <li  id="kaiHuangBaoJie.html" name="serviceListBtn" class="mui-table-view-cell mui-media mui-col-xs-3">
+		            <a href="javascript:void(0);">
+		                <img class="mui-media-object" src="../../images/service7.png">
+		                <div class="mui-media-body">新居开荒</div>
+		            </a>
+		        </li>
+		        <li id="desk_clean" name="serviceListBtn" class="mui-table-view-cell mui-media mui-col-xs-3">
+		            <a href="javascript:void(0);">
+		            	<img class="mui-media-object" src="../../images/service6.png">
+		                <div class="mui-media-body">家居保养</div>
+		            </a>
+		        </li>
+		        <li id="muYingHuLi.html" name="serviceListBtn" class="mui-table-view-cell mui-media mui-col-xs-3">
+		            <a href="javascript:void(0);">
+		                <img class="mui-media-object" src="../../images/service5.png">
+		                <div class="mui-media-body">母婴护理</div>
+		            </a>
+		        </li>
+		        <li id="yangLaoHuLi.html" name="serviceListBtn" class="mui-table-view-cell mui-media mui-col-xs-3">
+		            <a href="javascript:void(0);">
+		                <img class="mui-media-object" src="../../images/service4.png">
+		                <div class="mui-media-body">养老护理</div>
+		            </a>
+		        </li>
+		    </ul>    
+		</div>
+		
+		<div class="mui-content" style="background-color:#fff">
+		    <h5 style="background-color:#efeff4">缴费</h5>
+		    <ul class="mui-table-view">
+				<li class="mui-table-view-cell mui-media">
+					<a href="javascript:;">
+						<img class="mui-media-object mui-pull-left" src="../../images/home/house_pay.png">
+						<div class="mui-media-body">
+							物业费
+							<p class='mui-ellipsis'>暂时紧支持九州御府的物业费</p>
+						</div>
+						<button type="button" class="mui-btn mui-btn-danger">
+							缴费
+						</button>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media">
+					<a href="javascript:;">
+						<img class="mui-media-object mui-pull-left" src="../../images/home/water_pay.png">
+						<div class="mui-media-body">
+							水费
+							<p class='mui-ellipsis'>暂时紧支持九州御府的水费</p>
+						</div>
+						<button type="button" class="mui-btn mui-btn-danger">
+							缴费
+						</button>
+					</a>
+				</li>
+		    </ul>    
+		</div>
+		<div class="mui-content" style="background-color:#fff">
+		    <h5 style="background-color:#efeff4">贴心服务</h5>
+		    <ul class="mui-table-view mui-grid-view">
+		        <li id='riChangBaoJie' class="mui-table-view-cell mui-media mui-col-xs-6" name="serviceBtn">
+		            <p style="font-size: x-large;font-weight: bold;color: #3AACA6;line-height: 150%;">日常保洁</p>
+		            <p>2小时起服务,会员享优惠</p>
+		            <img class="mui-media-object mui-pull-bottom" src="../../images/home/day_clean.png">
+		        </li>
+		        <li class="mui-table-view-cell mui-media mui-col-xs-6">
+	        		<div id='kongQiZhiLi' name="serviceBtn">
+	        			<div class="mui-col-xs-7" style="float: left;padding-top:20px">
+	        				<p style="font-size:larger;font-weight: bold;color: #3AACA6;line-height: 150%;">空气治理</p>
+							<p class='mui-ellipsis'>还您清新空气</p>
+	        			</div>
+	        			<div class="mui-col-xs-5" style="float: left;">
+	        				<img src="../../images/home/glass_clean.png">
+	        			</div>
+						
+	        		</div>
+	        		<div id='chuFangBaoYang' name="serviceBtn">
+	        			<div class="mui-col-xs-7" style="float: left;padding-top:20px ;">
+	        				<p style="font-size: larger;font-weight: bold;color: #3AACA6;line-height: 150%;">厨房保养</p>
+							<p class='mui-ellipsis'>清除异味污垢</p>
+	        			</div>
+	        			<div class="mui-col-xs-5" style="float: left;">
+	        				<img src="../../images/home/deep_clean.png">
+	        			</div>
+	        		</div>
+		        </li>
+		    </ul>    
+		</div>
+		
+		
+	</body>
+	
+	<script>
+		//style="-webkit-transform: translate3d(-360px, 0px, 0px) translateZ(0px); "
+		
+		if(navigator.userAgent.indexOf("Html5Plus")<0){//不支持5+ API
+	        mui.alert("不支持5+ API");
+	    }else{//支持5+ API
+	        mui.alert("支持5+ API");
+	    }
+		console.log('home 页面');
+		 //mui初始化
+		mui.init();
+		var userInfo;
+		var mobileNum;
+		var self;
+		var wt;
+		var actContainer;
+		var actPoints;
+		var actData;
+		var listImg = document.getElementsByName("actImg");
+		var listP = document.getElementsByName("actP");
+
+		var tempAct = 	'<a href="javascript:void(0);" name="actionA" id="action3">' + 
+						'<img id="img0" name="actImg" src="../../images/home/cfjz_sty.png" style="width:100%;height: 266px;">' + 
+						'<p id="p0" name="actP" class="mui-slider-title">春风家政公司服务我市大型娱乐休闲场所鑫悦生态园</p>' + 
+						'</a>' + 
+						'';  
+		
+		var tempSlider = 
+				'<div id="actContainer" >' + 
+					'<div class="mui-slider-item">' + 
+						'<a href="javascript:void(0);" name="actionA" id="action0">' + 
+							'<img id="img1" name="actImg" src="../../images/home/cfjz_akhd.png" style="width:100%;height: 266px;">' + 
+							'<p id="p1" name="actP" class="mui-slider-title">春风家政五一送健康大型优惠清洗活动</p>' + 
+						'</a>' + 
+					'</div>' + 
+					'<div class="mui-slider-item">' + 
+						'<a href="javascript:void(0);" name="actionA" id="action1">' + 
+							'<img id="img2" name="actImg" src="../../images/home/cfjz_hd.png" style="width:100%;height: 266px;">' + 
+							'<p id="p2" name="actP" class="mui-slider-title">春风家政夏季送健康活动盛大开幕</p>' + 
+						'</a>' + 
+					'</div>' + 
+				'</div>' + 
+				'<div id="actPoints" class="mui-slider-indicator mui-text-right">' + 
+					'<div class="mui-indicator mui-active"></div>' + 
+					'<div class="mui-indicator"></div>' + 
+				'</div>';
+			
+		
+		var serviceListTapped = function(event){
+			
+//			if(event.target.id == 'kongTiaoQingXi' || event.target.id == 'baoMu'){
+			if(myUtils.stringEndWith(event.currentTarget.id,'.html')){
+				var url = '../server/';
+				mui.openWindow({
+				    url:url + event.currentTarget.id,
+				    id:'offcanvas-service-list.html',
+				    extras:{
+				    	mobileNum:mobileNum,
+				    	serviceId:event.currentTarget.id.substring(0,event.currentTarget.id.length - '.html'.length),
+				    }
+				});				
+			}else{
+				mui.openWindow({
+				    url:"offcanvas-service-list.html#" + event.currentTarget.id,
+				    id:'offcanvas-service-list.html',
+				    extras:{
+				    	mobileNum:mobileNum,
+				    }
+				}) ;
+			}
+		}
+		var serviceTapped = function(event){
+			mui.openWindow({
+			    url:'../server/' + event.currentTarget.id + '.html',
+			    id:'offcanvas-service-list.html',
+			    extras:{
+			    	mobileNum:mobileNum,
+			    	serviceId:event.currentTarget.id,
+			    }
+			}) ;
+		}
+		function feeBtnTapped(feeType){
+			console.log("mobileNum  ====== " + mobileNum);
+			if(mobileNum){
+				mui.openWindow({
+				    url:'payment_hose.html',
+				    id:'payment_hose.html',
+				    extras:{
+//					    	user:userInfo.user,
+				    	mobileNum:mobileNum,
+//					    	house:userInfo.houseDetail,
+				    	feeType:feeType,
+				    }
+				});
+			}else{
+				goLogin('menu_sub_home.html');
+			}
+		}
+		
+		function actionTapped(event){
+			var length = event.currentTarget.id.length;
+			var index = event.currentTarget.id.substring(length - 1,length);
+			console.log('event.currentTarget.id,index = ' + event.currentTarget.id + ',' + index);
+			mui.openWindow({
+			    url:'actionDetail.html',
+			    id:'actionDetail.html',
+			    extras:{
+			    	actionId:event.currentTarget.id,
+			    	actData:actData[index],
+			    }
+			});
+		}
+		
+		
+		var showAction = function(actdata,classname){
+			console.log('showAction classname = ' + classname);
+			var div = document.createElement('div');
+			div.innerHTML = tempAct;
+//			div.className = classname;
+//			div.addClass(classname);
+			div.setAttribute('class',classname);
+			printObject(div,'div',1,'function');
+			actContainer.appendChild(div);
+		}
+		
+		var loadActionSuccess = function(loadedata){
+			actData = loadedata;
+			console.log('活动加载成功 loadedata.length = ' + loadedata.length);
+			wt.close();
+			 
+//			if(true){
+//				var div = document.createElement('div');
+//				div.setAttribute('class','mui-slider');
+//				div.innerHTML = tempSlider;
+////				div.querySelector('#actContainer').setAttribute('class','mui-slider-group mui-slider-loop');
+//				div.querySelector('#actContainer').className = 'mui-slider-group mui-slider-loop';
+//				div.querySelector('#actContainer').style = '-webkit-transform: translate3d(-360px, 0px, 0px) translateZ(0px);';
+//				mui('#content1')[0].appendChild(div);
+//				printObject(mui('#content1')[0],"mui('#content1')[0]");
+//				mui.init();
+//				return;
+//			}
+//			var length = loadedata.length;
+//			if(length <= 0){
+//				return;
+//			}else if(length == 1){
+//				showAction(loadedata[0],"mui-slider-item");
+//			}else if(length > 1){
+////				showAction(loadedata[length - 1],"mui-slider-item mui-slider-item-duplicate");
+//				for (var i = 0;i < length;i ++) {
+//					showAction(loadedata[i],"mui-slider-item");
+//					
+//					if(i > 0){
+//						var div = document.createElement('div');
+//						div.className = 'mui-indicator';
+//						actPoints.appendChild(div);
+//					}
+//				}
+////				showAction(loadedata[0],"mui-slider-item mui-slider-item-duplicate");
+//				
+//				mui.init();
+//				printObject(actContainer,'actContainer');
+//			}
+			
+			
+			
+			for (var i = 0;i < loadedata.length;i ++) {
+				listImg[i + 1].src = imgActUrl + loadedata[i].imgPath;
+				listP[i + 1].innerHTML = loadedata[i].title;
+				if(i == 0){
+					listImg[listImg.length - 1].src = imgActUrl + loadedata[i].imgPath;
+					listP[listImg.length - 1].innerHTML = loadedata[i].title;
+				}else if(i == loadedata.length - 1){
+					listImg[0].src = imgActUrl + loadedata[i].imgPath;
+					listP[0].innerHTML = loadedata[i].title;
+				}
+//				showAction(loadedata);
+			}
+		}
+		
+		var loadActionError = function(err){
+			wt.close();
+			console.log('活动加载失败');
+			printObject(err,'err',2);
+		}
+		
+		
+		mui.plusReady(function() {
+			self = plus.webview.currentWebview();
+			actContainer = mui("#actContainer")[0];
+			actPoints = mui("#actPoints")[0];
+			
+			addRefreshEvent(function(data){
+				mobileNum = data.mobileNum;
+			});				//注册刷新页面的回调函数,当需要刷新时,触发'refresh'事件即可
+//			readUserInfoFromWebSql(function(data){
+//				mobileNum = data.mobileNum;
+//			});				//第一次初始化页面时就得加载数据,判断用户有没有登录
+			mobileNum = plus.storage.getItem('mobileNum');
+			
+			var list = document.getElementsByName("serviceListBtn");
+			for (var i = 0; i < list.length; i++) {
+				list[i].addEventListener("tap",serviceListTapped);
+			}
+			
+			var list = document.getElementsByName("serviceBtn");
+			for (var i = 0; i < list.length; i++) {
+				list[i].addEventListener("tap",serviceTapped);
+			}
+			
+			
+			var list = document.getElementsByTagName("button");
+//			for (var i = 0; i < list.length; i++) {
+				list[0].addEventListener("tap",function(){
+					feeBtnTapped('estate');
+				});
+				list[1].addEventListener("tap",function(){
+					feeBtnTapped('water');
+				});
+//			}
+
+			var list = document.getElementsByName("actionA");
+			for (var i = 0; i < list.length; i++) {
+				list[i].addEventListener("tap",actionTapped);
+			}
+
+			wt = plus.nativeUI.showWaiting();
+			operateDB('action/findNewAction/',{},loadActionSuccess,loadActionError);
+			
+		});
+
+	</script>
+</html>

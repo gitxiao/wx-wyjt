@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css"/>
+		<style>
+			.mui-table h4,.mui-table h5,.mui-table .mui-h5,.mui-table .mui-h6,.mui-table p{
+		        margin-top: 0;
+		        
+		    }
+		    .mui-table h4{
+		        line-height: 21px;
+		        font-weight: 500;
+		    }
+		
+		    .mui-table .oa-icon{
+		        position: absolute;
+		        right:0;
+		        bottom: 0;
+		    }
+		    .mui-table .oa-icon-star-filled{
+		        color:#f14e41;
+		    }
+		</style>
+	</head>
+
+	<body>
+		<div id='pullrefresh' class="mui-content">
+			<div class="mui-content-padded">
+				<button id='refresh' class="mui-btn mui-btn-block mui-btn-primary">刷新列表</button>
+			</div>
+		    <ul id='orderList' class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+		    </ul>
+		</div>
+	</body>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/myUtils.js"></script>
+	<script src="../../js/json2.js"></script>
+	<script src="../../js/myLogic.js"></script>
+	<script src="../../js/myConstant.js"></script>
+	<script src="../../js/myWebSQL.js"></script>
+	<script src="../../js/myServices.js"></script>
+	<script>
+	
+		var mobileNum;
+		var stateName = ['新订单','待评估','待确认','待支付','已支付','已取消','待施工','待分配'];
+		var template = "<li name='name1' class='mui-table-view-cell'>" +
+			           "<div class='mui-table' name='name2'>" +
+			                "<div class='mui-table-cell mui-col-xs-10'>" +
+			                    "<h4 class='mui-ellipsis'>订单编号</h4>" +
+			                    "<h5>服务类型</h5>" +
+			                    "<p id='serviceAddress' class='mui-h6 mui-ellipsis'>地址</p>" +
+			                "</div>" +
+			                    "<span class='state mui-h5' style='display: none;'></span>" +
+			                    "<button type='button' name='btnWorker' class='btnWorker mui-btn mui-btn-danger' style='display: none;text-align: center;'>" +
+									"'--'" +
+								"</button>" +
+			            "</div>" +
+			        "</li>";
+		
+		console.log('订单页面');
+		mui.init({
+		});
+	
+		var self;
+		var orderArray = [];
+		var orderTemplate = document.querySelector('#orderTemplate');
+		var orderList = document.querySelector('#orderList');
+		
+		var state;
+		var btnDom;
+		var stateDom;
+		var btnRefresh;
+		var wt;
+		
+		//添加显示一条信息的html元素
+		var addChildHtml = function(data){
+//			printObject(data,'data');
+			var length = orderArray.length	
+			orderArray[length] = data;			//把订单信息存放在数组中备用
+			
+			state = parseInt(data.state);
+			
+			var li = document.createElement('li');
+			li.innerHTML = template;
+			
+			btnDom = li.querySelector('button');
+			btnDom.id = length;
+			
+			stateDom = li.querySelector('.state');
+			switch(state){
+			case STATE_CANCELED:
+				stateDom.innerHTML = stateName[state];
+				stateDom.style.display = '';
+				btnDom.style.display = 'none';
+				break;
+			case STATE_DONE:
+				btnDom.style.display = '';
+				stateDom.style.display = 'none';
+				btnDom.innerHTML = '支付';
+				break;
+			case STATE_APPRAISED:
+				btnDom.style.display = '';
+				stateDom.style.display = 'none';
+				btnDom.innerHTML = '确认订单';
+				break;
+			default:
+				stateDom.innerHTML = stateName[state];
+				stateDom.style.display = '';
+				btnDom.style.display = 'none';
+				break;
+			}
+			
+			printObject(data,'data');
+			
+			li.querySelector('h4').innerHTML = serviceList[data.serviceId].name + ', ' + serviceList[data.serviceId].unit + (data.lastServiceArea ? data.lastServiceArea : data.serviceArea);
+			li.querySelector('h5').innerHTML = '地址: ' + data.address;
+			li.querySelector('p').innerHTML = '订单编号: ' + data.formNum;
+			if(data.serviceDate){
+//				orderTemplate.children[0].querySelector('.date').innerHTML = data.serviceDate.substring(0,10);
+			}
+			orderList.appendChild(li);
+		}
+		
+		var btnTapped = function(event){
+			var index = parseInt(event.detail.target.id);
+			var state = orderArray[index].state;
+			console.log('按下了按钮 = ' + event.detail.target.id + ', 订单状态 = ' + state);
+			if(state == STATE_DONE){
+				console.log('进入支付页面');
+				mui.openWindow({
+				    url:'payOrder.html',
+				    id:'payOrder.html',
+				    extras:{
+				    	mobileNum:mobileNum,
+				    	order:orderArray[index]
+				    }
+				});				
+			}else if(state == STATE_APPRAISED){
+				console.log('用户确认订单, 确认后, 后台可以分配施工');
+				console.log('orderArray[index].id = ' + orderArray[index].id);
+				mui.confirm('确认订单后, 我们将有专人上门服务. 是否确认订单?','提示','确定',function(event){
+					if(event.index == 0){
+						wt = plus.nativeUI.showWaiting();
+						operateDB('orderForm/userConfirmOrder/',{id:orderArray[index].id},confirmSuccess,confirmError);
+					}else{
+						console.log('取消');
+					}
+				});
+			}
+		}
+		
+		var confirmSuccess = function(result){
+			console.log('confirmSuccess');
+			wt.close();
+			onBtnRefreshList();
+			mui.toast('订单已确认');
+		}
+		var confirmError = function(result){
+			console.log('confirmError');
+			wt.close();
+			printObject(result,'result');
+			mui.toast('订单确认失败, 请稍后重试');
+		}
+		
+		addMyEvent('addNewOrder',function(data){
+			console.log('触发addNewOrder事件');
+			printObject(data,'data');
+			addChildHtml(data);
+		});
+		
+		//添加订单显示条目
+		var loadDataSuccess = function(loadedata){
+			wt.close();
+			for (var i = 0;i < loadedata.length;i ++) {
+				addChildHtml(loadedata[i]);
+			}
+			btnDom = orderList.getElementsByClassName('btnWorker');
+			for (var i = 0;i < btnDom.length; i++) {
+				btnDom[i].addEventListener("tap",btnTapped);
+			}
+		}
+		
+		var loadDataError = function(err){
+			wt.close();
+			mui.confirm('加载失败, 是否重新加载', '提示','重新加载', function(e){
+				if (e.index == 0) {			//右侧按钮
+					loadOrderData(mobileNum);
+				} else {					//左侧按钮
+					//左侧按钮按下不需要响应
+				}
+			});
+			printObject(err,'err',2);
+		}
+		
+		function loadOrderData(mobileNum){
+			console.log('mobileNum = ' + mobileNum);
+			operateDB('orderForm/findByMobileNum/',{mobileNum:mobileNum},loadDataSuccess,loadDataError);
+		}
+		mui.plusReady(function() {
+			self = plus.webview.currentWebview();
+			console.log('加载订单数据  ');
+			addRefreshEvent(function(data){
+				mobileNum = data.mobileNum;
+				loadOrderData(mobileNum);
+			});				//注册刷新页面的回调函数,当需要刷新时,触发'refresh'事件即可
+//			readUserInfoFromWebSql(function(data){
+				mobileNum = plus.storage.getItem('mobileNum');
+				if(mobileNum){
+					wt = plus.nativeUI.showWaiting();
+					loadOrderData(mobileNum);
+				}else{
+					console.log('还没有登录');
+				}
+//			});				//第一次初始化页面时就得加载数据,判断用户有没有登录
+			
+			btnRefresh = document.getElementById('refresh');
+			btnRefresh.addEventListener("tap",onBtnRefreshList);
+		});
+		
+		function onBtnRefreshList(){
+			console.log('before 刷新列表 orderList.children.length = ' + orderList.children.length);
+			
+			var length = orderList.children.length;
+			var length = orderList.children.length;
+			for (var i = length - 1; i >= 0; i--) {
+				orderList.removeChild(orderList.children[i]);
+			}
+			mobileNum = plus.storage.getItem('mobileNum');
+			if(mobileNum){
+				wt = plus.nativeUI.showWaiting();
+				setTimeout(function() {
+					loadOrderData(mobileNum);
+				},1000);
+				console.log('after 刷新列表 orderList.children.length = ' + orderList.children.length);
+			}else{
+				mui.alert('您还没有登录','提示');
+			}
+		}
+		
+		function pullupRefresh(){
+			console.log('上拉刷新');
+			setTimeout(function() {
+				//mui('#pullrefresh').pullRefresh().endPullupToRefresh(false); //参数为true代表没有更多数据了,关闭上拉刷新
+				//刷新出的新数据
+				//wt = plus.nativeUI.showWaiting();
+				loadOrderData(self.workerId);
+			}, 1000);
+		}
+	</script>
+</html>

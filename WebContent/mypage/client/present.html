@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" href="../../css/app.css">
+		<style>
+			html,body {
+				background-color: #efeff4;
+			}
+		</style>
+		
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/myUtils.js"></script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 id="title" class="mui-title">礼品兑换</h1>
+		</header>
+		
+		<div class="mui-content" style="margin-top: 20px;">
+	
+			<p class="mycenter">礼品卡可兑换保洁，保养，清洗等所有春风家政宝的服务</p>
+			<p class="mycenter">兑换后方可使用（礼品卡背面有卡号密码）</p>
+			
+		    <form class="mui-input-group">
+				<div class="mui-input-row">
+					<input id="cardId" type="text" class="mui-input-clear" placeholder="请输入礼品卡卡号"/>
+				</div>
+				<div class="mui-input-row">
+					<input id="password" type="text" class="mui-input-clear" placeholder="请输入礼品卡密码"/>
+				</div>
+			</form>
+			
+			<br />
+		    <div style="margin:1px auto;width:95%">
+				<button id="commit" type="button" class="mui-btn mui-btn-negative mui-btn-block" style="width:100%;">兑换</button>
+			</div>
+		</div>
+		
+		
+		<script type="text/javascript" charset="utf-8">
+			 //mui初始化
+			mui.init();
+			mui.plusReady(function() {
+				document.getElementById("commit").addEventListener("tap",function(){
+					var cardId = document.getElementById("cardId").value;
+					var password = document.getElementById("password").value;
+				});
+			});
+		</script>
+	</body>
+</html>
+

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="../../js/mui.min.js"></script>
+    <link href="../../css/mui.min.css" rel="stylesheet"/>
+    <link href="../../css/app.css" rel="stylesheet"/>
+    <script type="text/javascript" charset="UTF-8">
+      	mui.init();
+    </script>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	    <h1 class="mui-title">会员特权</h1>
+	</header>
+	<div class="mui-content">
+		<img id="pay_image" src="../../images/client_imgs/vippay.png" width="100%"/>
+	
+		<h3>春风家政会员</h3>
+		<p></p>
+		<div class="divcss5">
+			<p></p>
+			<p>在春风家政app内登录并充值即可成为春风家政会员。会员用户拥有春风家政账户及余额, 可以在登录有点击"我的-余额"查看</p>
+		</div>
+	
+		<br/><br/>
+		
+		<div class="divcss5">
+			<p></p>
+			<h3>会员特权福利</h3>
+			<p></p>
+		</div>
+		<p></p>
+		<p align="center">充值就送优惠券, 充得多送得多</p>
+		
+		<table border frame=void width=80% height=200px align="center">
+		<tr bgcolor=#99ffcc align="center">
+		  <td>充值金额（元）</td>
+		  <td>赠送优惠券金额（元）</td>
+		</tr>   
+		<tr align="center">
+		  <td>500</td>
+		  <td>30</td>
+		</tr>
+		<tr align="center">
+		  <td>1000</td>
+		  <td>100</td>
+		</tr>
+		<tr align="center">
+		  <td>2000</td>
+		  <td>220</td>
+		</tr>
+		</table>
+		<div class="imgcenter">
+			<img id="pay_image" src="../../images/client_imgs/press_to_pay.png" width="90%"/>
+		</div>
+		
+	</div>
+</body>
+</html>

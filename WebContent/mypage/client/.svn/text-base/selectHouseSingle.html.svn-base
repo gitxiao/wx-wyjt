@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" href="../../css/app.css">
+		<link href="../../css/mui.picker.css" rel="stylesheet" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<style>
+			html,body {
+				background-color: #efeff4;
+			}
+			.about_text{
+				
+			}
+		</style>
+		
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/myUtils.js"></script>
+		<script src="../../js/json2.js"></script>
+		<script src="../../js/myLogic.js"></script>
+		<script src="../../js/mui.picker.js"></script>
+		<script src="../../js/mui.poppicker.js"></script>
+		<script src="../../js/client/city.data.js"></script>
+		
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 id="title" class="mui-title">选择家庭住址</h1>
+		</header>
+		
+		<br/>
+		
+		<div class="mui-content" style="margin-top: 0px;">
+		    <div class="mui-content-padded">
+			    <button id='showDistrictPicker' name='btnPicker' class="mui-btn mui-btn-block" type='button'>选择小区</button>
+				<div id='districtResult' name='resultPicker'></div>
+				
+				<button id='showBuildPicker' name='btnPicker' class="mui-btn mui-btn-block" type='button'>选择编号</button>
+				<div id='buildResult' name='resultPicker'></div>
+				
+				<button id='showUnitPicker' name='btnPicker' class="mui-btn mui-btn-block" type='button'>选择单元</button>
+				<div id='unitResult' name='resultPicker'></div>
+				
+				<button id='showHousePicker' name='btnPicker' class="mui-btn mui-btn-block" type='button'>选择房间</button>
+				<div id='houseResult' name='resultPicker'></div>
+		    </div>
+		    
+		    <br/>
+		    <div>
+				<button id="commitHouse" type="button" class="button mui-btn mui-btn-negative mui-btn-block">确定</button>
+			</div>
+		</div>
+		
+		
+		<script type="text/javascript" charset="utf-8">
+			 //mui初始化
+			 
+			var dataSource = [
+				[{
+					value: 'ywwj',
+					text: '九州御府',
+					children: [{
+						value: "110101",
+						text: "东城区1",
+						children: [{
+							value: "110101",
+							text: "东城区1",
+							children: [{
+								value: "110101",
+								text: "东城区1"
+							}, {
+								value: "110102",
+								text: "西城区1"
+							}, {
+								value: "110103",
+								text: "崇文区1"
+							}, {
+								value: "110104",
+								text: "宣武区1"
+							}, ]
+								
+						}, {
+							value: "110102",
+							text: "西城区1"
+						}, {
+							value: "110103",
+							text: "崇文区1"
+						}, {
+							value: "110104",
+							text: "宣武区1"
+						}, ]
+					}, {
+						value: "110102",
+						text: "西城区1"
+					}, {
+						value: "110103",
+						text: "崇文区1"
+					}, {
+						value: "110104",
+						text: "宣武区1"
+					}, ]
+				},
+				{
+					value: 'ywj',
+					text: '九州御苑',
+					children: [{
+						value: "110101",
+						text: "东城区2"
+					}, {
+						value: "110102",
+						text: "西城区2"
+					}, {
+						value: "110103",
+						text: "崇文区2"
+					}, {
+						value: "110104",
+						text: "宣武区2"
+					}, ]
+				}],
+				[{
+					value: 'ywj',
+					text: '董事长 叶文洁'
+				}],
+				[{
+					value: 'ywj',
+					text: '董事长 叶文洁'
+				}],
+				[{
+					value: 'ywj',
+					text: '董事长 叶文洁'
+				}],
+			];
+			mui.init();
+			
+			mui.ready(function(){
+				//mui.ready比mui.plusReady执行顺序靠前
+				initPicker();
+			});
+				
+			
+			var initPicker = function(){
+//				var userPicker = new mui.PopPicker();
+//				userPicker.setData(dataSource);
+//				var showDistrictPickerButton = document.getElementById('showDistrictPicker');
+//				var userResult = document.getElementById('userResult');
+//				showDistrictPickerButton.addEventListener('tap', function(event) {
+//					console.log('--');
+//					userPicker.show(function(items) {
+//						userResult.innerText = JSON.stringify(items[0]);
+//						//返回 false 可以阻止选择框的关闭
+//						//return false;
+//					});
+//				}, false);
+				
+				var listButton = document.getElementsByName("btnPicker");
+//				var listResult = document.getElementsByName("resultPicker");
+				var pickerArr = new Array(listButton.length);
+				for (var i = 0; i < listButton.length; i++) {
+					pickerArr[i] = new mui.PopPicker({layer: 1});
+					pickerArr[i].setData(dataSource[i]);
+					
+					//循环结束后,i的值为4.  这里不能用i当参数传递. js中的闭包与lua中的闭包稍有区别.
+					switch(i){
+					case 0:
+						listButton[i].addEventListener("tap",function(event){
+							btnTapped(0);
+						},false);
+						break;
+					case 1:
+						listButton[i].addEventListener("tap",function(event){
+							btnTapped(1);
+						},false);
+						break;
+					case 2:
+						listButton[i].addEventListener("tap",function(event){
+							btnTapped(2);
+						},false);
+						break;
+					case 3:
+						listButton[i].addEventListener("tap",function(event){
+							btnTapped(3);
+						},false);
+						break;
+					}
+				}
+				function btnTapped(index){
+					console.log('index = ' + index);
+					pickerArr[index].show(function(items) {
+//						listButton[index].innerHTML = items[0].text;
+						listButton[index].innerHTML = JSON.stringify(items[0]);
+						
+						console.log('选择了 ' + items[0].text);
+						//返回 false时, 按确定键无法关闭选择框, 只能按取消键关闭
+//						return false;
+					});
+				}
+			}
+			
+			mui.plusReady(function() {
+				var self = plus.webview.currentWebview();
+				var btnCommit = document.getElementById("commitHouse");
+				
+				var commitSuccess = function(response){
+					console.log("commitSuccess:" + response);
+					if(response && response.id){
+						mui.alert('地址绑定成功');
+					}else{
+						alert("地址绑定失败,请稍后重试");
+					}
+					disableCommitBtn(false);
+				}
+				var commitError = function(xhr,type,errorThrown){
+					alert("网络错误,请稍后重试");
+					disableCommitBtn(false);
+				}
+				var disableCommitBtn = function(able){
+					btnCommit.disabled = able;
+					if(able){
+						btnCommit.innerHTML = '提交中...';
+					}else{
+						btnCommit.innerHTML = '确定提交';
+					}
+				}
+				
+				btnCommit.addEventListener("tap",function(){
+					alert('btnCommit');
+//					var city = document.getElementById("cityInput").value;
+//					var street = document.getElementById("streetInput").value;
+//					var detail = document.getElementById("detailInput").value;
+//					
+//					if(!city || !street || ! detail){
+//						alert("请输入完整的地址信息");
+//					}else{
+//						var jsonData = JSON.stringify({city:city,street:street,detail:detail});
+//						operateDB('address/saveAddress/',{jsonData:jsonData,mobileNum:self.mobileNum},commitSuccess,commitError);
+//						disableCommitBtn(true);
+//					}
+				});
+			});
+		</script>
+	</body>
+</html>
+

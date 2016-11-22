@@ -1,0 +1,89 @@
+<!--<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" href="../../css/app.css">
+		<style>
+			html,body, {
+				background-color: #efeff4;
+			}
+		</style>
+		
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/myUtils.js"></script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 id="title" class="mui-title">更多设置</h1>
+		</header>
+		<div class="mui-content">
+			<ul class="mui-table-view">
+				<li id=1 name='liTap' class="mui-table-view-cell">
+					<a class="mui-navigate-right" href="user_protocol.html">
+						用户协议
+					</a>
+				</li>
+				<li id=2 name='liTap' class="mui-table-view-cell">
+					<a class="mui-navigate-right" href="tel:03188673699">
+						联系客服
+					</a>
+				</li>
+			</ul>
+		</div>
+		
+		<p></p>
+		
+		<div>
+			<ul class="mui-table-view">
+				<li id=3 name='liTap' class="mui-table-view-cell">
+					<a class="mui-navigate-right" >
+						清除缓存
+					</a>
+				</li>
+				<li id=4 name='liTap' class="mui-table-view-cell">
+					<a class="mui-navigate-right" href="about.html">
+						关于我们
+					</a>
+				</li>
+			</ul>
+		</div>
+		
+		<script type="text/javascript" charset="utf-8">
+			 //mui初始化
+			console.log('更多设置 页面');
+			mui.init();
+			
+			function listOnTaped(event){
+				console.log('event.currentTarget.id = ' + event.currentTarget.id);
+//				mui.openWindow(this.href);
+				if(event.currentTarget.id == '3'){
+					mui.confirm('确定清除缓存?','提示',function(event){
+						if(event.index == '0'){
+							console.log('取消');
+						}else if(event.index == '1'){
+							console.log('确认');
+						}
+					});
+				}
+			}
+//			mui('#list1').on('tap', 'a', listOnTaped);
+//			mui('#list2').on('tap', 'a', listOnTaped);
+			
+			var liList;
+			mui.plusReady(function() {
+				liList = document.getElementsByName('liTap');
+				for (var i = 0; i < liList.length; i++) {
+					liList[i].addEventListener('tap',listOnTaped);
+				}
+			});
+		</script>
+	</body>
+</html>
+-->

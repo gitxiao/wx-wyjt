@@ -1,0 +1,46 @@
+<!--<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" href="../../css/app.css">
+		<style>
+			html,body {
+				background-color: #efeff4;
+			}
+			.about_text{
+				
+			}
+		</style>
+		
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/myUtils.js"></script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 id="title" class="mui-title">添加服务地址</h1>
+		</header>
+		
+		<div class="mui-content" style="margin-top: 20px;">
+		</div>
+		
+		
+		<script type="text/javascript" charset="utf-8">
+			 //mui初始化
+			mui.init();
+			mui.plusReady(function() {
+				document.getElementById("add_address").addEventListener("tap",function(){
+					console.log("添加新地址");
+					
+				});
+			});
+		</script>
+	</body>
+</html>
+-->

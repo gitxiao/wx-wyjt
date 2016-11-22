@@ -1,0 +1,95 @@
+/*
+ *这是单独为hello mui准备的个性化css，可以覆盖标准mui的css定义；
+ * 在实际项目开发时，建议为App单独写一个css文件，从而实现项目的自定义皮肤功能；
+ * 
+ * */
+
+/*.mui-plus.mui-android header.mui-bar{
+	display: none;
+}
+.mui-plus.mui-android .mui-bar-nav~.mui-content{
+	padding: 0;
+}
+
+
+
+/*消息*/
+/*.vip_news{background:#201D1C;border-radius:5px;margin:10px 20px;}
+.vip_news_div{height:230px;border-bottom:1px solid #5F5E5D;margin:10px 20px;}
+.vip_news_left{margin:30px 30px 0 20px;}
+.vip_news_right{color:#898989;margin:30px 0 0 0 ;width:60%;}
+.vip_news_right ul li:first-child{font-size:1.875rem;overflow:Hidden;line-height:70px;}
+.vip_news_right ul li:first-child span:last-child{color:#898989;}
+.vip_news_right ul li:last-child{font-size:1.2rem;}
+.fl{float:left;}
+.fr{float:right;}*/
+
+
+/*订单*/
+.pay_font_title{font-size:2.25rem;color:#D3DAE7;display:block;width:80%;}
+img.paybg{margin:5px 5px 5px 5px;}
+.pay_button{
+	/*vertical-align:middle;*/
+	margin:0 auto; 
+  	position: absolute;
+  	right: 10px;
+  	top: 15px;
+  	width:300px;
+  	height:120px;
+}
+.pay_icon{
+  	position: absolute;
+  	width:auto;
+  	left: 35px;
+  	top: 40px;
+}
+.pay_info{
+	font-size:2.5rem;
+	color:#dd2f30;
+  	position: absolute;
+  	left: 70px;
+  	top: 40px;
+}
+.pay_detail{
+	font-size:1.75rem;
+	color:#9999cc;
+  	position: absolute;
+  	left: 70px;
+  	top: 95px;
+}
+
+/*请登录*/
+.please_icon{
+	position: absolute;
+	top:20px;
+	left: 70px;
+	-webkit-transform: scaleY(1);
+	transform: scaleY(1.0);
+	background-color: #ffffff;
+}
+
+/*会员特权*/
+.divcss5{border-bottom:1px solid #ccf;border-top:1px solid #ccf} 
+
+/*充值*/
+.zengsong{
+	left: 40px;
+}
+.pay_icon{
+	position: absolute;
+	top:-5px;
+	left: 40px;
+	-webkit-transform: scaleY(1);
+	transform: scaleY(1.0);
+	background-color: #ffffff;
+}
+
+.mycenter{text-align:center}
+
+/*我的*/
+.mine_user_name{
+	margin:0 auto; 
+	/*position: absolute;*/
+	/*-webkit-transform: scaleY(1);*/
+	/*transform: scaleY(1.0);*/
+}

@@ -123,10 +123,12 @@ public class WeixinUtil {
 		Menu menu = new Menu();			//菜单栏
 		
 		ViewButton button = new ViewButton();		//第一个主菜单
-		button.setName("测试");
+		button.setName("测试3");
 		button.setType("view");
 //		String url = CreateURL(MY_URL + "/pages/home.jsp");
-		String url = CreateURL("http://7f60950f.ngrok.io/wx_order/index.jsp");
+//		String url = CreateURL("http://7f60950f.ngrok.io/wx_order/index.jsp");
+		String url = CreateURL("http://75b6926f.ngrok.io/wx_order/demos/index.html");
+//		String url = CreateURL("http://7f60950f.ngrok.io/wx_order/index.html");
 		System.out.println("initMenu url = " + url);
 		button.setUrl(url);
 		

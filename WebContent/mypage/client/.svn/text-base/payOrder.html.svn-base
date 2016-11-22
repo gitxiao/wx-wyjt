@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
+    <script src="../../js/mui.min.js"></script>
+    <script src="../../js/myLogic.js"></script>
+    <script src="../../js/myUtils.js"></script>
+    <script src="../../js/beecloud.js"></script>
+    <script src="../../js/myServices.js"></script>
+    
+    <link href="../../css/mui.min.css" rel="stylesheet"/>
+    <link href="../../css/app.css" rel="stylesheet"/>
+    <style>
+    	h5{
+	        padding-top: 8px;
+	        padding-bottom: 8px;
+	        text-indent: 12px;
+	    }
+    </style>
+    
+    <script type="text/javascript" charset="UTF-8">
+    	var payid = "WX_APP";
+    	var self;
+    	var mobileNum;
+    	var serviceType;
+    	var serviceAddress;
+    	var serviceSize;
+    	var serviceSizeName;
+    	var btnConfirm;
+    	var useMoney;
+    	
+      	mui.init();
+      	mui.plusReady(function() {
+      		self = plus.webview.currentWebview();
+      		
+      		mobileNum = document.getElementById('mobileNum');
+      		serviceType = document.getElementById("serviceType");
+      		serviceSizeName = document.getElementById("serviceSizeName");
+      		serviceAddress = document.getElementById("serviceAddress");
+      		serviceSize = document.getElementById("sizeInput");
+      		haveMoney = document.getElementById('haveMoney');
+      		btnConfirm = document.getElementById("btnConfirm");
+      		orderPrice = document.getElementById('orderPrice');
+      		serviceDate = document.getElementById('serviceDate');
+      		needPay = document.getElementById('needPay');
+      		
+      		serviceDate.innerHTML = self.order.planDate ? self.order.planDate : self.order.serviceDate;
+      		mobileNum.innerHTML = self.mobileNum;
+      		serviceType.innerHTML = serviceList[self.order.serviceId].name;
+      		serviceAddress.innerHTML = self.order.address;
+      		orderPrice.innerHTML = self.order.lastPrice + '元';
+      		
+    	
+      		//注意， 这里必须在plusReady函数内调用，否则会报错没有找到id为button_pay的组件
+	      	document.getElementById("button_pay").addEventListener("tap",function(){
+				console.log("payid = " + payid);
+				beecloudPay(payid);
+			});
+      	
+      		document.querySelector('.mui-input-group').addEventListener('change',function(event){
+				payid = event.target.id;
+			});
+			
+			operateDB('user/getUserByMobileNum/',{mobileNum:self.mobileNum},getUserDataSuccess,getUserDataError);
+      	});
+      	
+      	function getUserDataSuccess(response){
+      		if(response && response.user && response.user.id > 0){
+				console.log("读取用户数据成功");
+				haveMoney.innerHTML = response.user.haveMoney + '元';
+				if(self.order.lastPrice - response.user.haveMoney >= 0){
+					useMoney = response.user.haveMoney;
+				}else{
+					useMoney = self.order.lastPrice;
+				}
+				needPay.innerHTML = (self.order.lastPrice - useMoney) + '元';
+			}else if(response == -1 || response == '-1'){
+				console.log("读取用户数据异常 response = " + response);
+			}else{
+				console.log("读取用户数据异常 response = " + response);
+			}
+      	}
+      	function getUserDataError(){
+      		mui.toast('余额获取失败');
+      	}
+      	
+      	
+      	
+		function beecloudPay(bcChannel) {
+			var _appid = bcChannel == "UN_WEB"?"c37d661d-7e61-49ea-96a5-68c34e83db3b":"44f01a13-965f-4b27-ba9f-da678b47f3f5"
+//			var _appid = bcChannel=="UN_WEB"?"c37d661d-7e61-49ea-96a5-68c34e83db3b":"8b9a0f42-c263-40d9-a0fe-2d415028cdf5"
+			
+			console.log('self.order.lastPrice = ' + self.order.lastPrice);
+			var payData = {
+				app_id: _appid,
+				channel: bcChannel,  
+				title: "春风家政",  
+				total_fee: (useMoney ? self.order.lastPrice - useMoney : self.order.lastPrice) * 100, 
+				bill_no: beecloud.genBillNo(),    
+				optional: {'uerId':'chunfeng','phone':'15369865680'},  
+				bill_timeout: 361,
+				return_url: "http://www.dcloud.io/demo/pay"//wap支付成功后的回跳地址
+			};
+			beecloud.payReq(payData, function(result) {
+				console.log(result);
+				alert('支付成功');
+			}, function(err) {
+				printObject(err,"err");
+				mui.toast('支付失败');
+				//测试, 失败时保存支付数据, 正式版应在支付成功时调用
+				operateDB('user/modifyHaveMoney/',{mobileNum:self.mobileNum,lastPrice:self.order.lastPrice,useMoney:useMoney},modifySuccess,modifyError);
+				operateDB('orderForm/payForOrderById/',{id:self.order.id},paySuccess,payError);
+			});
+			
+			var paySuccess = function(result){
+				alert('保存付费记录成功');
+				//这里需要扣除余额, 并且再次赠送余额.
+				printObject(result,'paySuccess result',1);
+			}
+			var payError = function(result){
+				alert('保存付费记录失败,请联系客服');
+				printObject(result,'payError result',1);
+			}
+			
+			var modifySuccess = function(result){
+				alert('修改用户余额成功');
+				//这里需要扣除余额, 并且再次赠送余额.
+				printObject(result,'modifySuccess result',1);
+				
+				var menu_sub_mine = plus.webview.getWebviewById('pages/client/menu_sub_mine.html');
+				mui.fire(menu_sub_mine,'myrefresh',{mobileNum:self.mobileNum});
+
+				var newMoney = Math.ceil(self.order.lastPrice * 0.02);
+				if(newMoney > 0){
+					mui.alert('恭喜您获得' + newMoney + '元零钱,已存入余额,下次支付订单时即可使用!');
+				}
+			}
+			var modifyError = function(result){
+				alert('修改用户余额失败');
+				printObject(result,'modifyError result',1);
+			}
+		}
+    </script>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	    <h1 class="mui-title">订单支付</h1>
+	</header>
+	<div class="mui-content">
+		
+		<div>
+			<div style="margin-left: 20px;">
+				<br />
+				<p style='float:left;font-size:medium;color: #3AACA6;'>电话号码:&nbsp;&nbsp;</p>
+				<p id='mobileNum' style="font-size: medium;"></p>
+			
+				<p style='float:left;font-size:medium;color: #3AACA6;'>服务类型:&nbsp;&nbsp;</p>
+				<p id='serviceType' style="font-size: medium;"></p>
+			
+				<p style='float:left;font-size:medium;color: #3AACA6;'>服务地址:&nbsp;&nbsp;</p>
+				<p id='serviceAddress' style="font-size: medium;"></p>
+
+				<p style='float:left;font-size:medium;color: #3AACA6;'>服务日期:&nbsp;&nbsp;</p>
+				<p id='serviceDate' style="font-size: medium;">服务时间</p>
+				
+				<p style='float:left;font-size:medium;color: #3AACA6;'>服务价格:&nbsp;&nbsp;</p>
+				<p id='orderPrice' style="font-size: medium;"></p>
+				
+				<p style='float:left;font-size:medium;color: #3AACA6;'>可用余额:&nbsp;&nbsp;</p>
+				<p id='haveMoney' style="font-size: medium;"></p>
+				
+				<p style='float:left;font-size:medium;color: #3AACA6;'>实际支付:&nbsp;&nbsp;</p>
+				<p id='needPay' style="font-size: medium;"></p>
+			</div>
+		</div>
+		
+		<br />
+		<h4 style="background-color:#efeff4;padding-left: 15px;padding-bottom: 6px;">选择支付方式</h4>
+		
+		<div class="mui-card" style="padding-top: 25px;padding-bottom: 5px;padding-left: 20px;">
+			<form class="mui-input-group">
+				<div class="mui-input-row mui-radio" style="height: 60px;">
+					<img class="mui-media-object mui-pull-left" src="../../images/client_imgs/icon_adress.png">
+					<div class="pay_icon" style="border:0px">
+						<h4>微信支付</h4>
+						<p>亿万用户的选择，更快更安全</p>
+					</div>
+					<input id="WX_APP" name="radio1" type="radio" value="1" checked>
+				</div>
+				<div class="mui-input-row mui-radio" style="height:60px; margin-top: 20px;"> 
+					<img class="mui-media-object mui-pull-left" src="../../images/client_imgs/icon_adress.png">
+					<div class="pay_icon" style="border:0px">
+						<h4>支付宝支付</h4>
+						<p>推荐支付宝用户使用</p>
+					</div>
+					<input id="ALI_APP" name="radio1" type="radio" value="2">
+				</div>
+			</form>
+		</div>
+		
+		<br/>		
+		
+		<div>
+			<button id="button_pay" type="button" class="button mui-btn mui-btn-success mui-btn-block">立即支付</button>
+		</div>
+	</div>
+		
+</body>
+</html>

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>春风家政</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<style>
+			html,
+			body {
+				background-color: #efeff4;
+			}
+			p {
+				text-indent: 22px;
+			}
+			span.mui-icon {
+				font-size: 14px;
+				color: #007aff;
+				margin-left: -15px;
+				padding-right: 10px;
+			}
+			.mui-off-canvas-left {
+				color: #FFF000;
+			}
+			.title {
+				margin: 35px 15px 10px;
+			}
+			.title+.content {
+				margin: 10px 15px 35px;
+				color: #bbb;
+				text-indent: 1em;
+				font-size: 14px;
+				line-height: 24px;
+			}
+			input {
+				color: #000;
+			}
+			.list_title {
+				margin: 20px 15px 10px;
+				color: #6d6d72;
+				font-size: 15px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!--侧滑菜单容器-->
+		<div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable">
+			<!--菜单部分-->
+			<aside id="offCanvasSide" class="mui-off-canvas-left" style="width: 38%;font-size: smaller;">
+				<div id="offCanvasSideScroll" class="mui-scroll-wrapper">
+					<div class="mui-scroll ">
+						<ul class="mui-table-view mui-table-view-chevron mui-table-view-inverted ">
+							<li class="mui-table-view-cell">
+								<a href="#home_clean" class="mui-navigate-right">
+									居家清洁
+								</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a href="#jiad_clean" class="mui-navigate-right">
+									家电清洗
+								</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a href="#jiad_wx" class="mui-navigate-right">
+									家电维修
+								</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a href="#desk_clean" class="mui-navigate-right">
+									家居保养
+								</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a href="#air_clean" class="mui-navigate-right">
+									空气净化
+								</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a href="#baomu_clean" class="mui-navigate-right">
+									家庭护理
+								</a>
+							</li>
+							
+							<li class="mui-table-view-cell">
+								<a href="#company_clean" class="mui-navigate-right">
+									企业服务
+								</a>
+							</li>
+
+						</ul>
+					</div>
+				</div>
+			</aside>
+			<div class="mui-inner-wrap">
+				
+				<div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<div id="home_clean" class="list_title">
+							居家清洁
+						</div>
+						<ul id="ui_home_clean" class="mui-table-view">
+							
+							<li class="mui-table-view-cell mui-media">
+								<a href="kaiHuangBaoJie">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/kaiHuangBaoJie.png">
+									<div class="mui-media-body">
+										开荒保洁
+										<p class='mui-ellipsis'>玻璃、地面、顶棚、瓷片、洁具、踢脚线、家具等。5元/平</p>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media">
+								<a href="riChangBaoJie">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/riChangBaoJie.png">
+									<div class="mui-media-body">
+										日常保洁
+										<p class='mui-ellipsis'>客厅、卧室、书房、餐厅、阳台、厨房、卫生间等。包括玻璃、地面、顶棚、瓷片、洁具、脚踢线、家具等。4元/平</p>
+									</div>
+								</a>
+							</li>
+						</ul>
+						<div id="jiad_clean" class="list_title">
+							家电清洗
+						</div>
+						<ul id="ui_jiad_clean" class="mui-table-view">
+							<li class="mui-table-view-cell mui-media">
+								<a href="kongTiaoQingXi">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/kongTiaoQingXi.png">
+									<div class="mui-media-body">
+										空调清洗
+										<p class='mui-ellipsis'>挂机100/次,柜机130/次,中央空调70/次</p>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media">
+								<a href="youYanJiQingXi">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/youYanJiQingXi.png">
+									<div class="mui-media-body">
+										油烟机清洗
+										<p class='mui-ellipsis'>油烟机120/次,集成灶150/次,商务大抽烟机200/次</p>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media">
+								<a href="bingXiangQingXi">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/bingXiangQingXi.png">
+									<div class="mui-media-body">
+										冰箱清洗
+										<p class='mui-ellipsis'>二开门冰箱80/次,三开门冰箱100/次,对开门冰箱120/次,冰柜130/次</p>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media">
+								<a href="xiYiJiQingXi">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/xiYiJiQingXi.png">
+									<div class="mui-media-body">
+										洗衣机清洗
+										<p class='mui-ellipsis'>双缸洗衣机60/次,波轮洗衣机100/次,滚筒洗衣机120/次</p>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media">
+								<a href="yinShuiJiQingXi">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/yinShuiJiQingXi.png">
+									<div class="mui-media-body">
+										饮水机清洗
+										<p class='mui-ellipsis'>台式饮水机40/次,立式饮水机60/次</p>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media">
+								<a href="dianNaoQingXi">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/dianNaoQingXi.png">
+									<div class="mui-media-body">
+										电脑清洗
+										<p class='mui-ellipsis'>台式电脑30/次</p>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media">
+								<a href="reShuiQiQingXi">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/dianReShuiQiQingXi.png">
+									<div class="mui-media-body">
+										热水器清洗
+										<p class='mui-ellipsis'>电热水器120/次,太阳能热水器15/根</p>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media">
+								<a href="guanDaoShuTong">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/guanDaoShuTong.png">
+									<div class="mui-media-body">
+										管道疏通
+										<p class='mui-ellipsis'>疏通下水道, 马桶</p>
+									</div>
+								</a>
+							</li>
+						</ul>
+						<div id="jiad_wx" class="list_title">
+							家电维修
+						</div>
+						<ul id="ui_jiad_wx" class="mui-table-view">
+							<li class="mui-table-view-cell mui-media">
+								<a href="xiuDianShi">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/xiuDianShi.png">
+									<div class="mui-media-body">
+										修电视
+										<p class='mui-ellipsis'>价格面议</p>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media">
+								<a href="xiuBingXiang">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/xiuBingXiang.png">
+									<div class="mui-media-body">
+										修冰箱
+										<p class='mui-ellipsis'>价格面议</p>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media">
+								<a href="xiuXiYiJi">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/xiuXiYiJi.png">
+									<div class="mui-media-body">
+										修洗衣机
+										<p class='mui-ellipsis'>价格面议</p>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media">
+								<a href="xiuKongTiao">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/xiuKongTiao.png">
+									<div class="mui-media-body">
+										修空调
+										<p class='mui-ellipsis'>价格面议</p>
+									</div>
+								</a>
+							</li>
+						</ul>
+						<div id="desk_clean" class="list_title">
+							家具保养
+						</div>
+						<ul id="ui_desk_clean" class="mui-table-view">
+							<li class="mui-table-view-cell mui-media">
+								<a href="diBanBaoYang">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/diBanBaoYang.png">
+									<div class="mui-media-body">
+										地板保养
+										<p class='mui-ellipsis'>15元/平</p>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media">
+								<a href="chuFangBaoYang">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/chuFangBaoYang.png">
+									<div class="mui-media-body">
+										厨房保养
+										<p class='mui-ellipsis'>200元/套</p>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media">
+								<a href="weiShengJianBaoYang">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/weiShengJianBaoYang.png">
+									<div class="mui-media-body">
+										卫生间保养
+										<p class='mui-ellipsis'>150元/间</p>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media">
+								<a href="diTanQingXi">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/diTanQingXi.png">
+									<div class="mui-media-body">
+										地毯清洗
+										<p class='mui-ellipsis'>6平方起70元/次,每加1平收费10元</p>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media">
+								<a href="shaFaBaoYang">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/shaFaBaoYang.png">
+									<div class="mui-media-body">
+										沙发保养
+										<p class='mui-ellipsis'>布艺70元/座,真皮80元/座,席梦思床垫200/个</p>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media">
+								<a href="shiCaiJingMianChuLi">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/shiCaiJingMianChuLi.png">
+									<div class="mui-media-body">
+										石材晶面处理
+										<p class='mui-ellipsis'>大理石、花岗岩,晶面处理50元/平,打磨晶面处理80元/平</p>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media">
+								<a href="yingHua">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/yingHua.png">
+									<div class="mui-media-body">
+										水泥地坪硬化
+										<p class='mui-ellipsis'>晶面处理50元/平,打磨晶面处理80元/平</p>
+									</div>
+								</a>
+							</li>
+						</ul>
+						<div id="air_clean" class="list_title">
+							空气净化
+						</div>
+						<ul id="ui_air_clean" class="mui-table-view">
+							<li class="mui-table-view-cell mui-media">
+								<a href="kongQiZhiLi">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/kongQiZhiLi.png">
+									<div class="mui-media-body">
+										空气治理
+										<p class='mui-ellipsis'>20元/平</p>
+									</div>
+								</a>
+							</li>
+						</ul>
+						<div id="baomu_clean" class="list_title">
+							家庭护理
+						</div>
+						<ul id="ui_baomu_clean" class="mui-table-view">
+							<li class="mui-table-view-cell mui-media">
+								<a href="yangLaoHuLi">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/yangLaoHuLi.png">
+									<div class="mui-media-body">
+										养老护理
+										<p class='mui-ellipsis'>面议</p>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media">
+								<a href="muYingHuLi">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/muYingHuLi.png">
+									<div class="mui-media-body">
+										母婴护理
+										<p class='mui-ellipsis'>面议</p>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media">
+								<a href="yueSaoPeiXun">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/yueSaoPeiXun.png">
+									<div class="mui-media-body">
+										月嫂培训
+										<p class='mui-ellipsis'>免费</p>
+									</div>
+								</a>
+							</li>
+						</ul>
+						<div id="company_clean" class="list_title">
+							企业服务
+						</div>
+						<ul id="ui_company_clean" class="mui-table-view">
+							<li class="mui-table-view-cell mui-media">
+								<a href="qiYeBaoJie">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/qiYeBaoJie.png">
+									<div class="mui-media-body">
+										企业保洁托管
+										<p class='mui-ellipsis'>商场、企事业单位及宾馆拓荒、外墙等清洗。3元/平</p>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media">
+								<a href="gongChengBaoJie">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/gongChengBaoJie.png">
+									<div class="mui-media-body">
+										工程保洁
+										<p class='mui-ellipsis'>商场、企事业单位及宾馆拓荒、外墙等清洗。3元/平</p>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media">
+								<a href="guangGaoPaiQingXi">
+									<img class="mui-media-object mui-pull-left" src=" ../../images/icon/guangGaoPaiQingXi.png">
+									<div class="mui-media-body">
+										广告牌清洗
+										<p class='mui-ellipsis'>水痕、灰尘、油垢。120/次,3平方起,多一平方收费10元</p>
+									</div>
+								</a>
+							</li>
+						</ul>
+						
+
+					</div>
+				</div>
+				<!-- off-canvas backdrop -->
+				<div class="mui-off-canvas-backdrop"></div>
+			</div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/myUtils.js"></script>
+		<script>
+		 	var self;
+			mui.init({
+				swipeBack: false,
+			});
+			mui.plusReady(function() {
+				self = plus.webview.currentWebview();
+				 //侧滑容器父节点
+				var offCanvasWrapper = mui('#offCanvasWrapper');
+				 //主界面容器
+				var offCanvasInner = offCanvasWrapper[0].querySelector('.mui-inner-wrap');
+				 //菜单容器
+				var offCanvasSide = document.getElementById("offCanvasSide");
+				 //Android暂不支持整体移动动画
+				if (!mui.os.android) {
+					var spans = document.querySelectorAll('.android-only');
+					for (var i = 0, len = spans.length; i < len; i++) {
+						spans[i].style.display = "none";
+					}
+				}
+				 //移动效果是否为整体移动
+				var moveTogether = false;
+				 //侧滑容器的class列表，增加.mui-slide-in即可实现菜单移动、主界面不动的效果；
+				var classList = offCanvasWrapper[0].classList;
+				
+				 //主界面和侧滑菜单界面均支持区域滚动；
+				mui('#offCanvasSideScroll').scroll();
+				mui('#offCanvasContentScroll').scroll();
+				 //实现ios平台的侧滑关闭页面；
+				if (mui.os.plus && mui.os.ios) {
+					offCanvasWrapper[0].addEventListener('shown', function(e) { //菜单显示完成事件
+						plus.webview.currentWebview().setStyle({
+							'popGesture': 'none'
+						});
+					});
+					offCanvasWrapper[0].addEventListener('hidden', function(e) { //菜单关闭完成事件
+						plus.webview.currentWebview().setStyle({
+							'popGesture': 'close'
+						});
+					});
+				}
+				
+				mui('#ui_jiad_clean').on('tap', 'a', listOnTaped);
+				mui('#ui_desk_clean').on('tap', 'a', listOnTaped);
+				mui('#ui_baomu_clean').on('tap', 'a', listOnTaped);
+				mui('#ui_home_clean').on('tap', 'a', listOnTaped);
+				mui('#ui_month_clean').on('tap', 'a', listOnTaped);
+				mui('#ui_clock_clean').on('tap', 'a', listOnTaped);
+				mui('#ui_company_clean').on('tap', 'a', listOnTaped);
+				mui('#ui_air_clean').on('tap', 'a', listOnTaped);
+				mui('#ui_jiad_wx').on('tap', 'a', listOnTaped);
+			});
+			
+			function listOnTaped(){
+				var serviceId = this.getAttribute('href');
+				var pageName;
+				if(myUtils.stringStartWith(serviceId,'xiu')){
+					pageName = 'jiaDianWeiXiu';
+				}else{
+					pageName = serviceId;
+				}
+				var url = '../server/';
+				mui.openWindow({
+				    url:url + pageName + '.html',
+				    extras:{
+				    	mobileNum:self.mobileNum,
+				    	serviceId:serviceId,
+//				    	user:self.user,
+//				    	house:self.house,
+				    }
+				});
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" href="../../css/app.css">
+		<style>
+			html,body {
+				background-color: #efeff4;
+			}
+			
+		</style>
+		
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/myUtils.js"></script>
+		<script src="../../js/myLogic.js"></script>
+		<script src="../../js/myConstant.js"></script>
+		<script src="../../js/myWebSQL.js"></script>
+	</head>
+
+	<body>
+		<div class="mui-content">
+			
+		<div>
+			<img id="head_image" src="../../images/client_imgs/please_head.png" width="100%"/>
+			
+			<h4 id="textMobileNum" style="color:white;text-align: center;margin-top: -50px;">点我登录</h4>
+			<h4 id="textMoney" style="color:white;text-align: center;margin-top: 0px;">余额:</h4>
+		</div>
+		
+		<br />
+		<ul id="list1" class="mui-table-view mui-table-view-chevron">
+			<li class="mui-table-view-cell mui-media">
+				<a id='address' class="mui-navigate-right" href="address.html" check-login=1>
+					<img class="mui-media-object mui-pull-left" src="../../images/client_imgs/icon_adress.png">
+					<div class="please_icon">服务地址</div>
+				</a>
+			</li>
+			<li class="mui-table-view-cell mui-media">
+				<a id='suggest' class="mui-navigate-right" href="response.html" check-login=1>
+					<img class="mui-media-object mui-pull-left" src="../../images/client_imgs/icon_yijian.png">
+					<div class="please_icon">意见反馈</div>
+				</a>
+			</li>
+		</ul>
+		
+		<p></p>
+		<ul id="list2" class="mui-table-view mui-table-view-chevron">
+			<li class="mui-table-view-cell mui-media">
+				<a id='clear' class="mui-navigate-right" href="more_set.html" check-login=0>
+					<img class="mui-media-object mui-pull-left" src="../../images/client_imgs/icon_moreset.png">
+					<div class="please_icon">清除缓存</div>
+				</a>
+			</li>
+			<li class="mui-table-view-cell mui-media">
+				<a id='about' class="mui-navigate-right" href="about.html" check-login=0>
+					<img class="mui-media-object mui-pull-left" src="../../images/client_imgs/icon_moreset.png">
+					<div class="please_icon">关于我们</div>
+				</a>
+			</li>
+		</ul>
+		
+		<br />
+		<br />
+		<br />
+		<p style="margin-bottom: 0px;">备注:余额只能用于支付服务费用,不能支付订金,不能提现</p>
+		
+		</div>
+		
+		<script type="text/javascript" charset="utf-8">
+			console.log('我的页面');
+			 //mui初始化
+			mui.init();
+			var mobileNum;
+			var haveMoney;
+			var wt;
+			
+			function listOnTaped(event){
+				var href = this.href;
+				var check = this.getAttribute("check-login");
+				
+				if((this.id == 'address' || this.id == 'suggest' || this.id == 'about')){
+					if(myIsTrue(check) && !mobileNum){
+						mui.openWindow("quick_login.html");
+					}else{
+						mui.openWindow({
+							url:href,
+							extras:{
+						        mobileNum:mobileNum,
+								mode:'show',
+						    }
+						});
+					}
+				}else{
+					mui.confirm('确定清除缓存?','提示',function(event){
+						if(event.index == '0'){
+							console.log('取消');
+						}else if(event.index == '1'){
+							console.log('确认');
+							plus.storage.clear();
+							wt = plus.nativeUI.showWaiting();
+							setTimeout(function() {
+								wt.close();
+								mui.alert('数据清除成功, 重启应用后生效');
+							},1000);
+						}
+					});
+				}
+			}
+			
+			var textMobileNum = document.getElementById("textMobileNum");
+			var textMoney = document.getElementById("textMoney");
+//			var textMobileNum = document.getElementById("textMobileNum");
+			
+			//读取数据后刷新页面
+			var refreshPage = function(userdata){
+				printObject(userdata,'userdata',2);
+				if(userdata){
+					mobileNum = userdata.user.mobileNum;
+				}else{
+					mobileNum = plus.storage.getItem('mobileNum');
+				}
+				console.log('mine refreshPage mobileNum ====================== ' + mobileNum);
+				if(mobileNum){
+					textMobileNum.innerHTML = userdata.user.mobileNum;
+					textMoney.innerHTML = '余额 : ' + userdata.user.haveMoney + '元';
+					console.log('userdata.user.haveMoney = ' + userdata.user.haveMoney);
+				}else{
+					textMobileNum.innerHTML = '点我登录';
+				}
+			}
+			
+
+			var loginTapped = function(event){
+				if(mobileNum){
+					//alert("用户已登录则应该显示用户的余额和优惠券数据");
+					console.log("用户已登录  mobileNum = " + mobileNum);
+				}else{
+					goLogin('menu_sub_mine.html');
+				}			
+			}
+			
+			mui.plusReady(function() {
+				var self = plus.webview.currentWebview();
+			    addRefreshEvent(loadUserData);				//注册刷新页面的回调函数,当需要刷新时,触发'refresh'事件即可
+//				readUserInfoFromWebSql(loadUserData);		//初始化页面时就得加载数据,判断用户有没有登录
+				var data = {};
+				mobileNum = plus.storage.getItem('mobileNum');
+				data.mobileNum = plus.storage.getItem('mobileNum');
+				textMobileNum.innerHTML = data.mobileNum;
+				
+				loadUserData(data);
+				document.getElementById("head_image").addEventListener("tap",loginTapped);
+				document.getElementById("textMobileNum").addEventListener("tap",loginTapped);
+				mui('#list1').on('tap', 'a', listOnTaped);
+				mui('#list2').on('tap', 'a', listOnTaped);
+				
+				window.addEventListener('myrefresh',refreshPage);
+			});
+		</script>
+	</body>
+</html>
+
